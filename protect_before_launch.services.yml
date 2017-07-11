@@ -1,0 +1,10 @@
+services:
+  protect_before_launch.handler:
+    class: Drupal\protect_before_launch\Service\RequestHandler
+    arguments: ['@protect_before_launch.configuration']
+    tags:
+      - { name: http_middleware, priority: 500, responder: true }
+  protect_before_launch.configuration:
+    class: Drupal\protect_before_launch\Service\Configuration
+    arguments: ['@config.factory']
+

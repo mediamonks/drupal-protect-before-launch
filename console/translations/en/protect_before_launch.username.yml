@@ -1,0 +1,5 @@
+description: 'Update the HTTP username.'
+options: {}
+arguments: {}
+messages:
+    success: 'Updated the username.'

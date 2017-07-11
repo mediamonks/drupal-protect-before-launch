@@ -1,0 +1,5 @@
+name: Protect before launch
+type: module
+description: Protect your site before launch with HTTP basic auth
+core: 8.x
+package: Custom

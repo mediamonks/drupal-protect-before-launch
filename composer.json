@@ -1,0 +1,16 @@
+{
+  "name": "drupal/protect_before_launch",
+  "type": "drupal-module",
+  "description": "Protect your site before launch with a HTTP basic authentication",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/protect_before_launch",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/protect_before_launch",
+    "source": "https://github.com/jlentink/protect_before_launch"
+  },
+  "require": {
+    "drupal/console": "^0.11.3"
+  }
+}

@@ -1,0 +1,145 @@
+<?php
+
+namespace Drupal\protect_before_launch\Form;
+
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\protect_before_launch\Service\Configuration;
+use Psr\Container\ContainerInterface;
+
+/**
+ * Class DefaultForm.
+ *
+ * @package Drupal\protect_before_launch\Form
+ */
+class DefaultForm extends FormBase {
+
+  /**
+   * @var \Drupal\protect_before_launch\Service\Configuration
+   */
+  protected $config;
+
+  /**
+   * Constructs a \Drupal\system\ConfigFormBase object.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The factory for configuration objects.
+   */
+  public function __construct(Configuration $config) {
+    $this->config = $config;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('protect_before_launch.configuration')
+    );
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getEditableConfigNames() {
+    return [
+      'protect_before_launch.default',
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId() {
+    return 'admin_form';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    /** @var \Drupal\protect_before_launch\Service\Configuration $config */
+    $config = \Drupal::service('protect_before_launch.configuration');
+
+    $form['protect'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable protection'),
+      '#default_value' => $config->getProtect(),
+      '#required' => FALSE,
+      '#return_value' => 1,
+      '#description' => $this->t('Enable the login for the site.'),
+    ];
+
+    $form['username'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Username'),
+      '#default_value' => $config->getUsername(),
+      '#required' => TRUE,
+      '#description' => $this->t('The username to use to login.'),
+    ];
+
+    $form['password'] = [
+      '#type' => 'password_confirm',
+      '#required' => FALSE,
+      '#description' => $this->t('The password to use for the login'),
+    ];
+
+    $form['advanced-section'] = array(
+      '#type' => 'details',
+      '#title' => t('Advanced settings'),
+      '#group' => 'advanced',
+    );
+
+    $form['advanced-section']['realm'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Realm'),
+      '#default_value' => $config->getRealm() ?: $this->t('This site is protected'),
+      '#required' => TRUE,
+      '#description' => $this->t('The realm for the password'),
+    ];
+
+    $form['advanced-section']['denied_content'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Denied content'),
+      '#default_value' => $config->getContent() ?: $this->t('Access denied'),
+      '#required' => TRUE,
+      '#description' => $this->t('Text shown when user presses escape.'),
+    ];
+
+    $form['advanced-section']['exclude'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Exclude paths'),
+      '#default_value' => $config->getExcludePathsText(),
+      '#required' => FALSE,
+      '#description' => $this->t('Exclude these paths from password protection. Preg match <a href="http://php.net/preg_match" target="_blank">Patterns</a> '),
+    ];
+
+    return parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    parent::submitForm($form, $form_state);
+    /** @var \Drupal\protect_before_launch\Service\Configuration $config */
+    $config = \Drupal::service('protect_before_launch.configuration');
+    $config
+      ->setUsername($form_state->getValue('username'))
+      ->setRealm($form_state->getValue('realm'))
+      ->setContent($form_state->getValue('denied_content'))
+      ->setExcludePaths($form_state->getValue('exclude'))
+      ->setProtect($form_state->getValue('protect'))
+      ->setPassword($form_state->getValue('password'));
+  }
+}
