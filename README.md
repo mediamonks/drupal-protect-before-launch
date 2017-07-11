@@ -1,4 +1,4 @@
-#Protect before launch
+# Protect before launch
 Protected your website before launch with HTTP basic authentication. The module allows you to set a username and password and enable and disable them on the fly.
 
 ## Settings
