@@ -1,4 +1,3 @@
-
 protect_before_launch.admin_form:
   path: '/admin/config/protect_before_launch/settings'
   defaults:

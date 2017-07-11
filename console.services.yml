@@ -4,9 +4,13 @@ services:
     arguments: ['@protect_before_launch.configuration']
     tags:
       - { name: drupal.command }
-
   protect_before_launch.protect_before_launch_password:
     class: Drupal\protect_before_launch\Command\PasswordCommand
+    arguments: ['@protect_before_launch.configuration']
+    tags:
+      - { name: drupal.command }
+  protect_before_launch.protect_before_launch_enabled:
+    class: Drupal\protect_before_launch\Command\EnabledCommand
     arguments: ['@protect_before_launch.configuration']
     tags:
       - { name: drupal.command }

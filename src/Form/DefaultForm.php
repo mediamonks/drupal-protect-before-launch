@@ -2,12 +2,10 @@
 
 namespace Drupal\protect_before_launch\Form;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\protect_before_launch\Service\Configuration;
-use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class DefaultForm.
@@ -24,7 +22,7 @@ class DefaultForm extends FormBase {
   /**
    * Constructs a \Drupal\system\ConfigFormBase object.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   * @param Configuration $config
    *   The factory for configuration objects.
    */
   public function __construct(Configuration $config) {
@@ -67,7 +65,7 @@ class DefaultForm extends FormBase {
     $form['protect'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable protection'),
-      '#default_value' => $config->getProtect(),
+      '#default_value' => $this->config->getProtect(),
       '#required' => FALSE,
       '#return_value' => 1,
       '#description' => $this->t('Enable the login for the site.'),
@@ -76,7 +74,7 @@ class DefaultForm extends FormBase {
     $form['username'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Username'),
-      '#default_value' => $config->getUsername(),
+      '#default_value' => $this->config->getUsername(),
       '#required' => TRUE,
       '#description' => $this->t('The username to use to login.'),
     ];
@@ -96,7 +94,7 @@ class DefaultForm extends FormBase {
     $form['advanced-section']['realm'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Realm'),
-      '#default_value' => $config->getRealm() ?: $this->t('This site is protected'),
+      '#default_value' => $this->config->getRealm() ?: $this->t('This site is protected'),
       '#required' => TRUE,
       '#description' => $this->t('The realm for the password'),
     ];
@@ -104,7 +102,7 @@ class DefaultForm extends FormBase {
     $form['advanced-section']['denied_content'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Denied content'),
-      '#default_value' => $config->getContent() ?: $this->t('Access denied'),
+      '#default_value' => $this->config->getContent() ?: $this->t('Access denied'),
       '#required' => TRUE,
       '#description' => $this->t('Text shown when user presses escape.'),
     ];
@@ -112,12 +110,18 @@ class DefaultForm extends FormBase {
     $form['advanced-section']['exclude'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Exclude paths'),
-      '#default_value' => $config->getExcludePathsText(),
+      '#default_value' => $this->config->getExcludePathsText(),
       '#required' => FALSE,
       '#description' => $this->t('Exclude these paths from password protection. Preg match <a href="http://php.net/preg_match" target="_blank">Patterns</a> '),
     ];
 
-    return parent::buildForm($form, $form_state);
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#button_type' => 'primary',
+      '#value' => $this->t('Save configuration'),
+    ];
+
+    return $form;
   }
 
   /**
@@ -131,7 +135,6 @@ class DefaultForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    parent::submitForm($form, $form_state);
     /** @var \Drupal\protect_before_launch\Service\Configuration $config */
     $config = \Drupal::service('protect_before_launch.configuration');
     $config

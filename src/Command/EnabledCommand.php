@@ -12,7 +12,7 @@ use Drupal\Console\Annotations\DrupalCommand;
 use Drupal\protect_before_launch\Service\Configuration;
 
 /**
- * Class PasswordCommand.
+ * Class EnabledCommand.
  *
  * @package Drupal\protect_before_launch
  *
@@ -21,30 +21,32 @@ use Drupal\protect_before_launch\Service\Configuration;
  *     extensionType="module"
  * )
  */
-class PasswordCommand extends Command {
+class EnabledCommand extends Command {
 
   use CommandTrait;
 
   /**
-   * Constructs a new UsernameCommand object.
+   * Drupal\protect_before_launch\Service\Configuration definition.
    *
-   * @param $config Configuration
+   * @var \Drupal\protect_before_launch\Service\Configuration
    */
   protected $config;
 
+  /**
+   * Constructs a new EnabledCommand object.
+   */
   public function __construct(Configuration $config) {
     $this->config = $config;
     parent::__construct();
   }
-
   /**
    * {@inheritdoc}
    */
   protected function configure() {
     $this
-      ->setName('protect_before_launch:password')
-      ->addArgument('password', InputArgument::OPTIONAL)
-      ->setDescription($this->trans('commands.protect_before_launch.password.description'));
+      ->setName('protect_before_launch:enabled')
+      ->addArgument('enabled', InputArgument::OPTIONAL)
+      ->setDescription($this->trans('commands.protect_before_launch.enabled.description'));
   }
 
   /**
@@ -53,12 +55,13 @@ class PasswordCommand extends Command {
   protected function execute(InputInterface $input, OutputInterface $output) {
     $io = new DrupalStyle($input, $output);
 
-    $password = $input->getArgument('password');
-    if(null == $password){
-      $password = $io->ask('Which password to set?');
-    }
-    $this->config->setPassword($password);
+    $enabled = $input->getArgument('enabled');
 
-    $io->info(sprintf($this->trans('commands.protect_before_launch.password.messages.success'), $password));
+    if($enabled != 'true' && $enabled != 'false'){
+      $enabled = $io->choice('enable password protection', ['true', 'false']);
+    }
+    $this->config->setProtect($enabled == 'true'? 1 : 0);
+
+    $io->info(sprintf($this->trans('commands.protect_before_launch.enabled.messages.success'), $enabled == 'true'? 'Enabled' : 'Disabled'));
   }
 }
