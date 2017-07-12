@@ -29,13 +29,15 @@ class UsernameCommand extends Command {
   /**
    * Configuration definition.
    *
-   * @var Configuration
+   * @var \Drupal\protect_before_launch\Service\Configuration
    */
   protected $config;
 
   /**
    * Constructs a new UsernameCommand object.
-   * @param $config Configuration
+   *
+   * @param \Drupal\protect_before_launch\Service\Configuration $config
+   *   Public function construct config.
    */
   public function __construct(Configuration $config) {
     $this->config = $config;
@@ -59,7 +61,7 @@ class UsernameCommand extends Command {
     $io = new DrupalStyle($input, $output);
 
     $username = $input->getArgument('username');
-    if(null == $username){
+    if (NULL == $username) {
       $username = $io->ask('Which username to set?');
     }
 
@@ -67,4 +69,5 @@ class UsernameCommand extends Command {
 
     $io->info(sprintf($this->trans('commands.protect_before_launch.username.messages.success'), $username));
   }
+
 }

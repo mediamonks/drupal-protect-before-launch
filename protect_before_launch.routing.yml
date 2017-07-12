@@ -7,4 +7,3 @@ protect_before_launch.admin_form:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
-

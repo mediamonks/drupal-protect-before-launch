@@ -15,6 +15,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DefaultForm extends FormBase {
 
   /**
+   * Protected config.
+   *
    * @var \Drupal\protect_before_launch\Service\Configuration
    */
   protected $config;
@@ -22,7 +24,7 @@ class DefaultForm extends FormBase {
   /**
    * Constructs a \Drupal\system\ConfigFormBase object.
    *
-   * @param Configuration $config
+   * @param \Drupal\protect_before_launch\Service\Configuration $config
    *   The factory for configuration objects.
    */
   public function __construct(Configuration $config) {
@@ -37,7 +39,6 @@ class DefaultForm extends FormBase {
       $container->get('protect_before_launch.configuration')
     );
   }
-
 
   /**
    * {@inheritdoc}
@@ -85,11 +86,11 @@ class DefaultForm extends FormBase {
       '#description' => $this->t('The password to use for the login'),
     ];
 
-    $form['advanced-section'] = array(
+    $form['advanced-section'] = [
       '#type' => 'details',
       '#title' => t('Advanced settings'),
       '#group' => 'advanced',
-    );
+    ];
 
     $form['advanced-section']['realm'] = [
       '#type' => 'textfield',
@@ -112,7 +113,7 @@ class DefaultForm extends FormBase {
       '#title' => $this->t('Exclude paths'),
       '#default_value' => $this->config->getExcludePathsText(),
       '#required' => FALSE,
-      '#description' => $this->t('Exclude these paths from password protection. Preg match <a href="http://php.net/preg_match" target="_blank">Patterns</a> '),
+      '#description' => $this->t('Exclude these paths from password protection. Preg match <a href="http://php.net/preg_match" target="_blank">Patterns</a>'),
     ];
 
     $form['submit'] = [
@@ -127,9 +128,9 @@ class DefaultForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
-  }
+  /* public function validateForm(array &$form,FormStateInterface $form_state) {
+  parent::validateForm($form, $form_state);
+  } */
 
   /**
    * {@inheritdoc}
@@ -145,4 +146,5 @@ class DefaultForm extends FormBase {
       ->setProtect($form_state->getValue('protect'))
       ->setPassword($form_state->getValue('password'));
   }
+
 }

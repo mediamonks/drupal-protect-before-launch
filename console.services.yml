@@ -14,4 +14,3 @@ services:
     arguments: ['@protect_before_launch.configuration']
     tags:
       - { name: drupal.command }
-

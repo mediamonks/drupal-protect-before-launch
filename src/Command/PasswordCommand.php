@@ -28,10 +28,16 @@ class PasswordCommand extends Command {
   /**
    * Constructs a new UsernameCommand object.
    *
-   * @param $config Configuration
+   * @var config
    */
   protected $config;
 
+  /**
+   * {@inheritdoc}
+   *
+   * @param Drupal\protect_before_launch\Service\Configuration $config
+   *   Public function Configuration config.
+   */
   public function __construct(Configuration $config) {
     $this->config = $config;
     parent::__construct();
@@ -54,11 +60,12 @@ class PasswordCommand extends Command {
     $io = new DrupalStyle($input, $output);
 
     $password = $input->getArgument('password');
-    if(null == $password){
+    if (NULL == $password) {
       $password = $io->ask('Which password to set?');
     }
     $this->config->setPassword($password);
 
     $io->info(sprintf($this->trans('commands.protect_before_launch.password.messages.success'), $password));
   }
+
 }

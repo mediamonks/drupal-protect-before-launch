@@ -7,4 +7,3 @@ services:
   protect_before_launch.configuration:
     class: Drupal\protect_before_launch\Service\Configuration
     arguments: ['@config.factory']
-

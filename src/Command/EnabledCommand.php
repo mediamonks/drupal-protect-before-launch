@@ -39,6 +39,7 @@ class EnabledCommand extends Command {
     $this->config = $config;
     parent::__construct();
   }
+
   /**
    * {@inheritdoc}
    */
@@ -57,11 +58,12 @@ class EnabledCommand extends Command {
 
     $enabled = $input->getArgument('enabled');
 
-    if($enabled != 'true' && $enabled != 'false'){
+    if ($enabled != 'true' && $enabled != 'false') {
       $enabled = $io->choice('enable password protection', ['true', 'false']);
     }
-    $this->config->setProtect($enabled == 'true'? 1 : 0);
+    $this->config->setProtect($enabled == 'true' ? 1 : 0);
 
-    $io->info(sprintf($this->trans('commands.protect_before_launch.enabled.messages.success'), $enabled == 'true'? 'Enabled' : 'Disabled'));
+    $io->info(sprintf($this->trans('commands.protect_before_launch.enabled.messages.success'), $enabled == 'true' ? 'Enabled' : 'Disabled'));
   }
+
 }

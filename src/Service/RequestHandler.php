@@ -15,12 +15,16 @@ class RequestHandler implements HttpKernelInterface {
 
 
   /**
+   * Protected config.
+   *
    * @var \Drupal\protect_before_launch\Service\Configuration
    */
   protected $config = NULL;
 
   /**
-   * @var HttpKernelInterface
+   * Protected httpKernel.
+   *
+   * @var \Symfony\Component\HttpKernel\HttpKernelInterface
    */
   protected $httpKernel = NULL;
 
@@ -28,7 +32,9 @@ class RequestHandler implements HttpKernelInterface {
    * RequestHandler constructor.
    *
    * @param \Symfony\Component\HttpKernel\HttpKernelInterface $httpKernel
+   *   Public function httpKernel.
    * @param \Drupal\protect_before_launch\Service\Configuration $config
+   *   Public function config.
    */
   public function __construct(HttpKernelInterface $httpKernel, Configuration $config) {
     $this->httpKernel = $httpKernel;
@@ -36,9 +42,10 @@ class RequestHandler implements HttpKernelInterface {
   }
 
   /**
-   * Shield pages is enabled status
+   * Shield pages is enabled status.
    *
    * @return bool
+   *   Protected function shieldPage bool.
    */
   protected function shieldPage() {
     return $this->config->getProtect() ? TRUE : FALSE;
@@ -48,8 +55,10 @@ class RequestHandler implements HttpKernelInterface {
    * Check if path is excluded from password protection.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Protected function excludedPath request.
    *
    * @return bool
+   *   Protected excludedPath bool.
    */
   protected function excludedPath(Request $request) {
     $currentPath = urldecode($request->getRequestUri());
@@ -63,12 +72,15 @@ class RequestHandler implements HttpKernelInterface {
   }
 
   /**
-   * Is user allowed to visit page if not display password
+   * Is user allowed to visit page if not display password.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Protected function isAllowed request.
    * @param \Drupal\Core\Render\HtmlResponse $response
+   *   Protected function isAllowed response.
    *
    * @return \Drupal\Core\Render\HtmlResponse
+   *   Protected function isAllowed.
    */
   protected function isAllowed(Request $request, HtmlResponse $response) {
     if ($this->shieldPage() && !$this->excludedPath($request) && !$this->config->validate($request->getUser(), $request->getPassword())) {
@@ -90,4 +102,5 @@ class RequestHandler implements HttpKernelInterface {
     }
     return $response;
   }
+
 }
