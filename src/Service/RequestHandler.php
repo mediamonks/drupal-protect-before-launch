@@ -2,6 +2,9 @@
 
 namespace Drupal\protect_before_launch\Service;
 
+use Drupal\Core\Config\Config;
+use Drupal\Core\Entity\EntityManager;
+use Drupal\Core\Password\PhpassHashedPassword;
 use Drupal\Core\Render\HtmlResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -29,16 +32,26 @@ class RequestHandler implements HttpKernelInterface {
   protected $httpKernel = NULL;
 
   /**
+   * Entity Manager.
+   *
+   * @var \Drupal\Core\Entity\EntityManager
+   */
+  protected $entityManager = NULL;
+
+  /**
    * RequestHandler constructor.
    *
    * @param \Symfony\Component\HttpKernel\HttpKernelInterface $httpKernel
    *   Public function httpKernel.
    * @param \Drupal\protect_before_launch\Service\Configuration $config
    *   Public function config.
+   * @param \Drupal\Core\Entity\EntityManager $entityManager
+   *   Public function EntityManager.
    */
-  public function __construct(HttpKernelInterface $httpKernel, Configuration $config) {
+  public function __construct(HttpKernelInterface $httpKernel, Configuration $config, EntityManager $entityManager) {
     $this->httpKernel = $httpKernel;
     $this->config = $config;
+    $this->entityManager = $entityManager;
   }
 
   /**
@@ -48,7 +61,102 @@ class RequestHandler implements HttpKernelInterface {
    *   Protected function shieldPage bool.
    */
   protected function shieldPage() {
-    return $this->config->getProtect() ? TRUE : FALSE;
+    $status = $this->config->getProtect();
+    if (Configuration::CONFIG_ENABLED == $status) {
+      return TRUE;
+    }
+    elseif (Configuration::CONFIG_ENV_ENABLED == $status) {
+      return $this->systemEnvEnableShield();
+    }
+  }
+
+  /**
+   * Check if to auto enable based on env variable.
+   *
+   * @return int
+   *   Protection status
+   */
+  protected function systemEnvEnableShield() {
+    if (FALSE !== getenv($this->config->getEnvironmentKey())) {
+      if ($this->config->getEnvironmentValue()) {
+        if (getenv($this->config->getEnvironmentKey()) == $this->config->getEnvironmentValue()) {
+          return Configuration::CONFIG_ENABLED;
+        }
+        else {
+          return Configuration::CONFIG_DISABLED;
+        }
+      }
+      else {
+        return Configuration::CONFIG_ENABLED;
+      }
+    }
+    return Configuration::CONFIG_DISABLED;
+  }
+
+  /**
+   * Authenticate username,password and select correct backend.
+   *
+   * @param string $username
+   *   The username.
+   * @param string $password
+   *   The password.
+   *
+   * @return bool
+   *   Return status
+   */
+  protected function authenticate($username, $password) {
+    if (Configuration::CONFIG_AUTH_SIMPLE == $this->config->getAuthenticationType()) {
+      return $this->authenticateSimple($username, $password);
+    }
+    else {
+      return $this->authenticateDrupal($username, $password);
+    }
+
+  }
+
+  /**
+   * Authenticate user and password against simple username and password.
+   *
+   * @param string $username
+   *   The username.
+   * @param string $password
+   *   The password.
+   *
+   * @return bool
+   *   Return status.
+   */
+  protected function authenticateSimple($username, $password) {
+    return $this->config->validate($username, $password);
+  }
+
+  /**
+   * Authenticate username and password against drupal user database.
+   *
+   * @param string $username
+   *   The username.
+   * @param string $password
+   *   The password.
+   *
+   * @return bool
+   *   Return status.
+   */
+  protected function authenticateDrupal($username, $password) {
+    try {
+      $users = \Drupal::entityTypeManager()->getStorage('user')
+        ->loadByProperties(['name' => $username]);
+
+      if (count($users) > 1 || count($users) < 1) {
+        return FALSE;
+      }
+
+      $user = array_shift($users);
+
+      $passwordInterface = new PhpassHashedPassword();
+      return $passwordInterface->check($password, $user->getPassword());
+    }
+    catch (\Exception $e) {
+      return FALSE;
+    }
   }
 
   /**
@@ -83,10 +191,11 @@ class RequestHandler implements HttpKernelInterface {
    *   Protected function isAllowed.
    */
   protected function isAllowed(Request $request, HtmlResponse $response) {
-    if ($this->shieldPage() && !$this->excludedPath($request) && !$this->config->validate($request->getUser(), $request->getPassword())) {
+    if ($this->shieldPage() && !$this->excludedPath($request) && !$this->authenticate($request->getUser(), $request->getPassword())) {
       $response->headers->add(['WWW-Authenticate' => 'Basic realm="' . $this->config->getRealm() . '"']);
       $response->setStatusCode(401, 'Unauthorized');
       $response->setContent($this->config->getContent());
+      $bla = $this->config->getContent();
     }
     return $response;
   }
@@ -95,6 +204,8 @@ class RequestHandler implements HttpKernelInterface {
    * {@inheritdoc}
    */
   public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = TRUE) {
+
+    $status = $this->authenticate('root', 'root');
     /** @var \Drupal\Core\Render\HtmlResponse $response */
     $response = $this->httpKernel->handle($request, $type, $catch);
     if ('cli' != php_sapi_name() && get_class($response) == 'Drupal\Core\Render\HtmlResponse') {

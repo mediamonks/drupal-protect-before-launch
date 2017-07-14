@@ -57,13 +57,27 @@ class EnabledCommand extends Command {
     $io = new DrupalStyle($input, $output);
 
     $enabled = $input->getArgument('enabled');
-
-    if ($enabled != 'true' && $enabled != 'false') {
-      $enabled = $io->choice('enable password protection', ['true', 'false']);
+    $options = ['disabled', 'enabled', 'env_enabled'];
+    if (!in_array($enabled, $options)) {
+      $enabled = $io->choice('enable password protection', $options);
     }
-    $this->config->setProtect($enabled == 'true' ? 1 : 0);
 
-    $io->info(sprintf($this->trans('commands.protect_before_launch.enabled.messages.success'), $enabled == 'true' ? 'Enabled' : 'Disabled'));
+    switch ($enabled) {
+      case 'disabled':
+        $this->config->setProtect(Configuration::CONFIG_DISABLED);
+        break;
+
+      case 'enabled':
+        $this->config->setProtect(Configuration::CONFIG_ENABLED);
+        break;
+
+      case 'env_enabled':
+        $this->config->setProtect(Configuration::CONFIG_ENV_ENABLED);
+        break;
+
+    }
+
+    $io->info(sprintf($this->trans('commands.protect_before_launch.enabled.messages.success'), $enabled));
   }
 
 }

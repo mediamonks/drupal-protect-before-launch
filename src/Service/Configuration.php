@@ -15,6 +15,31 @@ class Configuration {
   const CONFIG_KEY = 'protect_before_launch.settings';
 
   /**
+   * Always disabled.
+   */
+  const CONFIG_DISABLED = 0;
+
+  /**
+   * Always enabled.
+   */
+  const CONFIG_ENABLED = 1;
+
+  /**
+   * Enabled only when env variable is set.
+   */
+  const CONFIG_ENV_ENABLED = 2;
+
+  /**
+   * Simple authenticate.
+   */
+  const CONFIG_AUTH_SIMPLE = 1;
+
+  /**
+   * Drupal authenticate.
+   */
+  const CONFIG_AUTH_DRUPAL = 2;
+
+  /**
    * Set the config hash algorithm.
    */
   const CONFIG_HASH = PASSWORD_BCRYPT;
@@ -165,7 +190,7 @@ class Configuration {
    *   Public function getProtect bool.
    */
   public function getProtect() {
-    return $this->get('protect') ? TRUE : FALSE;
+    return $this->get('protect');
   }
 
   /**
@@ -178,7 +203,7 @@ class Configuration {
    *   Public function setContent this.
    */
   public function setContent($content) {
-    $this->set('realm', $content);
+    $this->set('content', $content);
     return $this;
   }
 
@@ -190,6 +215,80 @@ class Configuration {
    */
   public function getContent() {
     return $this->get('content');
+  }
+
+  /**
+   * Set the Environment Key.
+   *
+   * @param string $environmentKey
+   *   Public function setEnvironmentKey environmentKey.
+   *
+   * @return $this
+   *   Public function setContent this.
+   */
+  public function setEnvironmentKey($environmentKey) {
+    $this->set('environment_key', trim($environmentKey));
+    return $this;
+  }
+
+  /**
+   * Get Environment Key.
+   *
+   * @return string|null
+   *   Public function setContent this.
+   */
+  public function getEnvironmentKey() {
+    return $this->get('environment_key');
+  }
+
+  /**
+   * Set the Environment Value.
+   *
+   * @param string $environmentValue
+   *   Public function setEnvironmentValue environmentValue.
+   *
+   * @return $this
+   *   Public function setEnvironmentValue this.
+   */
+  public function setEnvironmentValue($environmentValue) {
+    $this->set('environment_value', trim($environmentValue));
+    return $this;
+
+  }
+
+  /**
+   * Get Environment Value.
+   *
+   * @return string|null
+   *   Public function getEnvironmentValue this.
+   */
+  public function getEnvironmentValue() {
+    return $this->get('environment_value');
+  }
+
+  /**
+   * Set the Authentication Value.
+   *
+   * @param string $authenticationType
+   *   Public function setAuthenticationType authenticationType.
+   *
+   * @return $this
+   *   Public function setAuthenticationType this.
+   */
+  public function setAuthenticationType($authenticationType) {
+    $this->set('authentication_type', $authenticationType);
+    return $this;
+
+  }
+
+  /**
+   * Get Authentication Value.
+   *
+   * @return string|null
+   *   Public function getEnvironmentValue this.
+   */
+  public function getAuthenticationType() {
+    return $this->get('authentication_type');
   }
 
   /**

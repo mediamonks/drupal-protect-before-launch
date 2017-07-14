@@ -64,11 +64,15 @@ class DefaultForm extends FormBase {
     $config = \Drupal::service('protect_before_launch.configuration');
 
     $form['protect'] = [
-      '#type' => 'checkbox',
+      '#type' => 'select',
       '#title' => $this->t('Enable protection'),
       '#default_value' => $this->config->getProtect(),
-      '#required' => FALSE,
-      '#return_value' => 1,
+      '#required' => TRUE,
+      '#options' => [
+        Configuration::CONFIG_DISABLED => $this->t('Disabled'),
+        Configuration::CONFIG_ENABLED => $this->t('Enabled'),
+        Configuration::CONFIG_ENV_ENABLED => $this->t('Auto Enabled with Environment key/value'),
+      ],
       '#description' => $this->t('Enable the login for the site.'),
     ];
 
@@ -90,6 +94,18 @@ class DefaultForm extends FormBase {
       '#type' => 'details',
       '#title' => t('Advanced settings'),
       '#group' => 'advanced',
+    ];
+
+    $form['advanced-section']['authentication_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Identity provider'),
+      '#default_value' => $this->config->getAuthenticationType(),
+      '#required' => TRUE,
+      '#options' => [
+        Configuration::CONFIG_AUTH_SIMPLE => $this->t('Standalone Username and password'),
+        Configuration::CONFIG_AUTH_DRUPAL => $this->t('Drupal authenticate'),
+      ],
+      '#description' => $this->t('Select identity provider'),
     ];
 
     $form['advanced-section']['realm'] = [
@@ -116,6 +132,22 @@ class DefaultForm extends FormBase {
       '#description' => $this->t('Exclude these paths from password protection. Preg match <a href="http://php.net/preg_match" target="_blank">Patterns</a>'),
     ];
 
+    $form['advanced-section']['environment_key'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Environment key'),
+      '#default_value' => $this->config->getEnvironmentKey() ?: 'AH_NON_PRODUCTION',
+      '#required' => TRUE,
+      '#description' => $this->t('The Environment variable to auto enable'),
+    ];
+
+    $form['advanced-section']['environment_value'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('environment_value key'),
+      '#default_value' => $this->config->getEnvironmentValue(),
+      '#required' => FALSE,
+      '#description' => $this->t('The Environment value to auto enable. leave empty if you want to ignore the value'),
+    ];
+
     $form['submit'] = [
       '#type' => 'submit',
       '#button_type' => 'primary',
@@ -140,11 +172,14 @@ class DefaultForm extends FormBase {
     $config = \Drupal::service('protect_before_launch.configuration');
     $config
       ->setUsername($form_state->getValue('username'))
+      ->setAuthenticationType($form_state->getValue('authentication_type'))
       ->setRealm($form_state->getValue('realm'))
       ->setContent($form_state->getValue('denied_content'))
       ->setExcludePaths($form_state->getValue('exclude'))
       ->setProtect($form_state->getValue('protect'))
-      ->setPassword($form_state->getValue('password'));
+      ->setPassword($form_state->getValue('password'))
+      ->setEnvironmentKey($form_state->getValue('environment_key'))
+      ->setEnvironmentValue($form_state->getValue('environment_value'));
   }
 
 }
