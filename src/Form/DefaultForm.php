@@ -60,9 +60,6 @@ class DefaultForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\protect_before_launch\Service\Configuration $config */
-    $config = \Drupal::service('protect_before_launch.configuration');
-
     $form['protect'] = [
       '#type' => 'select',
       '#title' => $this->t('Enable protection'),
@@ -156,13 +153,6 @@ class DefaultForm extends FormBase {
 
     return $form;
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  /* public function validateForm(array &$form,FormStateInterface $form_state) {
-  parent::validateForm($form, $form_state);
-  } */
 
   /**
    * {@inheritdoc}

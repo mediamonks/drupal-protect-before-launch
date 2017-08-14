@@ -35,7 +35,7 @@ class PasswordCommand extends Command {
   /**
    * {@inheritdoc}
    *
-   * @param Drupal\protect_before_launch\Service\Configuration $config
+   * @param \Drupal\protect_before_launch\Service\Configuration $config
    *   Public function Configuration config.
    */
   public function __construct(Configuration $config) {

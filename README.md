@@ -23,8 +23,11 @@ when this is set it will enable the password protection.<br />
 When also the System Variable value is set the the module will check
 if the value in the variable is set correctly before enabling.<br />
 <br />
-Default value is set to "AH_NON_PRODUCTION" to work correctly with
-Acquia Hosting
+### Acquia hosting
+Default value is set to "AH\_NON\_PRODUCTION" to work correctly with
+Acquia Hosting out of the box. Just select set an username and 
+password and set protection mode to "env_enabled". All none 
+production servers will be password protected.
 
 ### Identity provider
 The module allows you to use the drupal user database to authenticate
@@ -46,11 +49,11 @@ _Admin_ > _Configuration_ > _Development_ > _Protect before launch_.
 
 ## Console commands
 
-**protect\_before\_launch:enabled [disabled|enabled|env_enabled]**<br />
+**protect\_before\_launch:enabled [disabled | enabled | env_enabled]**<br />
 Enable / Disable the password protection
 
-**protect\_before\_launch:username [username]**<br />
+**protect\_before\_launch:username [<username>]**<br />
 Set the username to authenticate against.
 
-**protect\_before\_launch:password [password]**<br />
+**protect\_before\_launch:password [<password>]**<br />
 Set the password to authenticate against.

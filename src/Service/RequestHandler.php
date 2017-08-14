@@ -2,8 +2,7 @@
 
 namespace Drupal\protect_before_launch\Service;
 
-use Drupal\Core\Config\Config;
-use Drupal\Core\Entity\EntityManager;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Password\PhpassHashedPassword;
 use Drupal\Core\Render\HtmlResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +33,7 @@ class RequestHandler implements HttpKernelInterface {
   /**
    * Entity Manager.
    *
-   * @var \Drupal\Core\Entity\EntityManager
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
   protected $entityManager = NULL;
 
@@ -45,10 +44,10 @@ class RequestHandler implements HttpKernelInterface {
    *   Public function httpKernel.
    * @param \Drupal\protect_before_launch\Service\Configuration $config
    *   Public function config.
-   * @param \Drupal\Core\Entity\EntityManager $entityManager
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityManager
    *   Public function EntityManager.
    */
-  public function __construct(HttpKernelInterface $httpKernel, Configuration $config, EntityManager $entityManager) {
+  public function __construct(HttpKernelInterface $httpKernel, Configuration $config, EntityTypeManager $entityManager) {
     $this->httpKernel = $httpKernel;
     $this->config = $config;
     $this->entityManager = $entityManager;
@@ -142,7 +141,7 @@ class RequestHandler implements HttpKernelInterface {
    */
   protected function authenticateDrupal($username, $password) {
     try {
-      $users = \Drupal::entityTypeManager()->getStorage('user')
+      $users = $this->entityManager->getStorage('user')
         ->loadByProperties(['name' => $username]);
 
       if (count($users) > 1 || count($users) < 1) {
@@ -151,7 +150,7 @@ class RequestHandler implements HttpKernelInterface {
 
       $user = array_shift($users);
 
-      $passwordInterface = new PhpassHashedPassword();
+      $passwordInterface = new PhpassHashedPassword(PhpassHashedPassword::MIN_HASH_COUNT);
       return $passwordInterface->check($password, $user->getPassword());
     }
     catch (\Exception $e) {
@@ -195,7 +194,6 @@ class RequestHandler implements HttpKernelInterface {
       $response->headers->add(['WWW-Authenticate' => 'Basic realm="' . $this->config->getRealm() . '"']);
       $response->setStatusCode(401, 'Unauthorized');
       $response->setContent($this->config->getContent());
-      $bla = $this->config->getContent();
     }
     return $response;
   }
@@ -204,8 +202,6 @@ class RequestHandler implements HttpKernelInterface {
    * {@inheritdoc}
    */
   public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = TRUE) {
-
-    $status = $this->authenticate('root', 'root');
     /** @var \Drupal\Core\Render\HtmlResponse $response */
     $response = $this->httpKernel->handle($request, $type, $catch);
     if ('cli' != php_sapi_name() && get_class($response) == 'Drupal\Core\Render\HtmlResponse') {
