@@ -2,7 +2,7 @@
 
 namespace Drupal\protect_before_launch\Form;
 
-use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\protect_before_launch\Service\Configuration;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\protect_before_launch\Form
  */
-class DefaultForm extends FormBase {
+class DefaultForm extends ConfigFormBase {
 
   /**
    * Protected config.
@@ -45,7 +45,7 @@ class DefaultForm extends FormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'protect_before_launch.default',
+      Configuration::CONFIG_KEY,
     ];
   }
 
