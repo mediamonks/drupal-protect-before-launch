@@ -3,6 +3,7 @@
 namespace Drupal\protect_before_launch\Service;
 
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\PageCache\ResponsePolicy\KillSwitch;
 use Drupal\Core\Password\PhpassHashedPassword;
 use Drupal\Core\Render\HtmlResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,6 +39,13 @@ class RequestHandler implements HttpKernelInterface {
   protected $entityManager = NULL;
 
   /**
+   * Cache kill switch.
+   *
+   * @var \Drupal\Core\PageCache\ResponsePolicy\KillSwitch
+   */
+  protected $killSwitch = NULL;
+
+  /**
    * RequestHandler constructor.
    *
    * @param \Symfony\Component\HttpKernel\HttpKernelInterface $httpKernel
@@ -46,11 +54,14 @@ class RequestHandler implements HttpKernelInterface {
    *   Public function config.
    * @param \Drupal\Core\Entity\EntityTypeManager $entityManager
    *   Public function EntityManager.
+   * @param \Drupal\Core\PageCache\ResponsePolicy\KillSwitch $killSwitch
+   *   Public function KillSwitch.
    */
-  public function __construct(HttpKernelInterface $httpKernel, Configuration $config, EntityTypeManager $entityManager) {
+  public function __construct(HttpKernelInterface $httpKernel, Configuration $config, EntityTypeManager $entityManager, KillSwitch $killSwitch) {
     $this->httpKernel = $httpKernel;
     $this->config = $config;
     $this->entityManager = $entityManager;
+    $this->killSwitch = $killSwitch;
   }
 
   /**
@@ -190,10 +201,13 @@ class RequestHandler implements HttpKernelInterface {
    *   Protected function isAllowed.
    */
   protected function isAllowed(Request $request, HtmlResponse $response) {
-    if ($this->shieldPage() && !$this->excludedPath($request) && !$this->authenticate($request->getUser(), $request->getPassword())) {
-      $response->headers->add(['WWW-Authenticate' => 'Basic realm="' . $this->config->getRealm() . '"']);
-      $response->setStatusCode(401, 'Unauthorized');
-      $response->setContent($this->config->getContent());
+    if($this->shieldPage()) {
+      $this->killSwitch->trigger();
+      if (!$this->excludedPath($request) && !$this->authenticate($request->getUser(), $request->getPassword())) {
+        $response->headers->add(['WWW-Authenticate' => 'Basic realm="' . $this->config->getRealm() . '"']);
+        $response->setStatusCode(401, 'Unauthorized');
+        $response->setContent($this->config->getContent());
+      }
     }
     return $response;
   }
