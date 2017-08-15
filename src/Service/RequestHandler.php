@@ -201,13 +201,11 @@ class RequestHandler implements HttpKernelInterface {
    *   Protected function isAllowed.
    */
   protected function isAllowed(Request $request, HtmlResponse $response) {
-    if($this->shieldPage()) {
+    if ($this->shieldPage() && !$this->excludedPath($request) && !$this->authenticate($request->getUser(), $request->getPassword())) {
       $this->killSwitch->trigger();
-      if (!$this->excludedPath($request) && !$this->authenticate($request->getUser(), $request->getPassword())) {
-        $response->headers->add(['WWW-Authenticate' => 'Basic realm="' . $this->config->getRealm() . '"']);
-        $response->setStatusCode(401, 'Unauthorized');
-        $response->setContent($this->config->getContent());
-      }
+      $response->headers->add(['WWW-Authenticate' => 'Basic realm="' . $this->config->getRealm() . '"']);
+      $response->setStatusCode(401, 'Unauthorized');
+      $response->setContent($this->config->getContent());
     }
     return $response;
   }
