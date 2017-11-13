@@ -16,7 +16,7 @@ The module allows you to set the following options for authentication.
 * Identity provider
 
 ### Auto enable with System variable
-Set the enabled mode to Enviriomental key/value.
+Set the enabled mode to Environmental key/value.
 When this mode is set the module will look for the variable and
 when this is set it will enable the password protection.<br />
 <br />
