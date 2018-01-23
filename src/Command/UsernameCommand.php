@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use Drupal\Console\Core\Command\Shared\CommandTrait;
 use Drupal\Console\Core\Style\DrupalStyle;
-use Drupal\protect_before_launch\Service\Configuration;
+use Drupal\protect_before_launch\Configuration;
 use Drupal\Console\Annotations\DrupalCommand;
 
 /**
@@ -21,27 +21,9 @@ use Drupal\Console\Annotations\DrupalCommand;
  *     extensionType="module"
  * )
  */
-class UsernameCommand extends Command {
+class UsernameCommand extends AbstractCommand {
 
-  use CommandTrait;
-
-  /**
-   * Configuration definition.
-   *
-   * @var \Drupal\protect_before_launch\Service\Configuration
-   */
-  protected $config;
-
-  /**
-   * Constructs a new UsernameCommand object.
-   *
-   * @param \Drupal\protect_before_launch\Service\Configuration $config
-   *   Public function construct config.
-   */
-  public function __construct(Configuration $config) {
-    $this->config = $config;
-    parent::__construct();
-  }
+  const ARGUMENT_USERNAME = 'username';
 
   /**
    * {@inheritdoc}
@@ -49,7 +31,7 @@ class UsernameCommand extends Command {
   protected function configure() {
     $this
       ->setName('protect_before_launch:username')
-      ->addArgument('username', InputArgument::OPTIONAL)
+      ->addArgument(self::ARGUMENT_USERNAME, InputArgument::OPTIONAL)
       ->setDescription($this->trans('commands.protect_before_launch.username.description'));
   }
 
@@ -57,16 +39,16 @@ class UsernameCommand extends Command {
    * {@inheritdoc}
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $io = new DrupalStyle($input, $output);
+    parent::execute($input, $output);
 
-    $username = $input->getArgument('username');
-    if (NULL == $username) {
-      $username = $io->ask('Which username to set?');
+    $username = $input->getArgument(self::ARGUMENT_USERNAME);
+    if (empty($username)) {
+      $username = $this->getIo()->ask($this->trans('commands.protect_before_launch.username.messages.question'));
     }
 
-    $this->config->setUsername($username);
+    $this->getConfig()->setUsername($username);
 
-    $io->info(sprintf($this->trans('commands.protect_before_launch.username.messages.success'), $username));
+    $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.username.messages.success'), $username));
   }
 
 }

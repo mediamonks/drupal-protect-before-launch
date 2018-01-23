@@ -16,7 +16,7 @@ function protect_before_launch_help($route_name, RouteMatchInterface $route_matc
     case 'help.page.protect_before_launch':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Protect your site before launch with a HTTP basic auth') . '</p>';
+      $output .= '<p>' . t('Protect your site before launch with HTTP basic authentication') . '</p>';
       return $output;
 
     default:

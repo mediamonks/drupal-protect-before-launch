@@ -1,22 +1,23 @@
 {
   "name": "drupal/protect_before_launch",
   "type": "drupal-module",
-  "description": "Protect your site before launch with a HTTP basic auth",
-  "keywords": ["Drupal"],
+  "description": "Protect your site before launch with HTTP basic authentication",
+  "keywords": ["drupal", "protect", "auth", "authentication", "basic auth", "env", "environment"],
   "license": "GPL-2.0+",
   "homepage": "https://www.drupal.org/project/protect_before_launch",
-  "minimum-stability": "dev",
   "authors": [
     {
       "name": "Jason Lentink (monkjason)",
       "homepage": "https://www.drupal.org/u/monkjason",
       "role": "Maintainer"
+    },
+    {
+      "name": "Robert Slootjes",
+      "email": "robert@mediamonks.com",
+      "homepage": "https://github.com/slootjes"
     }
   ],
-  "support": {
-    "issues": "https://www.drupal.org/project/issues/protect_before_launch",
-    "source": "http://cgit.drupalcode.org/protect_before_launch"
-  },
-  "require": {
+  "suggest": {
+    "drupal/console": "Allow status, username and password to be set by command line interface"
   }
 }

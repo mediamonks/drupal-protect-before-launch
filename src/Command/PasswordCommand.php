@@ -5,11 +5,7 @@ namespace Drupal\protect_before_launch\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
-use Drupal\Console\Core\Command\Shared\CommandTrait;
-use Drupal\Console\Core\Style\DrupalStyle;
 use Drupal\Console\Annotations\DrupalCommand;
-use Drupal\protect_before_launch\Service\Configuration;
 
 /**
  * Class PasswordCommand.
@@ -21,27 +17,9 @@ use Drupal\protect_before_launch\Service\Configuration;
  *     extensionType="module"
  * )
  */
-class PasswordCommand extends Command {
+class PasswordCommand extends AbstractCommand {
 
-  use CommandTrait;
-
-  /**
-   * Constructs a new UsernameCommand object.
-   *
-   * @var config
-   */
-  protected $config;
-
-  /**
-   * {@inheritdoc}
-   *
-   * @param Drupal\protect_before_launch\Service\Configuration $config
-   *   Public function Configuration config.
-   */
-  public function __construct(Configuration $config) {
-    $this->config = $config;
-    parent::__construct();
-  }
+  const ARGUMENT_PASSWORD = 'password';
 
   /**
    * {@inheritdoc}
@@ -49,7 +27,7 @@ class PasswordCommand extends Command {
   protected function configure() {
     $this
       ->setName('protect_before_launch:password')
-      ->addArgument('password', InputArgument::OPTIONAL)
+      ->addArgument(self::ARGUMENT_PASSWORD, InputArgument::OPTIONAL)
       ->setDescription($this->trans('commands.protect_before_launch.password.description'));
   }
 
@@ -57,15 +35,16 @@ class PasswordCommand extends Command {
    * {@inheritdoc}
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $io = new DrupalStyle($input, $output);
+    parent::execute($input, $output);
 
-    $password = $input->getArgument('password');
+    $password = $input->getArgument(self::ARGUMENT_PASSWORD);
     if (NULL == $password) {
-      $password = $io->ask('Which password to set?');
+      $password = $this->getIo()->ask($this->trans('commands.protect_before_launch.password.messages.question'));
     }
-    $this->config->setPassword($password);
 
-    $io->info(sprintf($this->trans('commands.protect_before_launch.password.messages.success'), $password));
+    $this->getConfig()->setPassword($password);
+
+    $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.password.messages.success'), $password));
   }
 
 }

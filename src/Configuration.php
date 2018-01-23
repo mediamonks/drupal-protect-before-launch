@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\protect_before_launch\Service;
+namespace Drupal\protect_before_launch;
 
-use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * {@inheritdoc}
@@ -54,10 +54,10 @@ class Configuration {
   /**
    * Configuration constructor.
    *
-   * @param \Drupal\Core\Config\ConfigFactory $configFactory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Public function configFactory.
    */
-  public function __construct(ConfigFactory $configFactory) {
+  public function __construct(ConfigFactoryInterface $configFactory) {
     $this->configFactory = $configFactory;
   }
 
@@ -322,11 +322,17 @@ class Configuration {
    *   Public function getExcludePaths array.
    */
   public function getExcludePaths() {
-    return explode(PHP_EOL, $this->getExcludePathsText());
+    $paths = [];
+    foreach (explode(PHP_EOL, $this->getExcludePathsText()) as $path) {
+      if (!empty(trim($path))) {
+        $paths[] = $path;
+      }
+    }
+    return $paths;
   }
 
   /**
-   * Validate username and password against saved credentials.
+   * Verify username and password against saved credentials.
    *
    * @param string $username
    *   Public function validate string username.
@@ -336,8 +342,8 @@ class Configuration {
    * @return bool
    *   Public function validate bool.
    */
-  public function validate($username, $password) {
-    if (!$username || !$password || $username != $this->getUsername() || !password_verify($password, $this->getPassword())) {
+  public function validateCredentials($username, $password) {
+    if (!$username || !$password || $username !== $this->getUsername() || !password_verify($password, $this->getPassword())) {
       return FALSE;
     }
     return TRUE;

@@ -4,7 +4,7 @@ protect_before_launch.settings:
   mapping:
     protect:
       type: integer
-      label: 'Enable protection mode'
+      label: 'Protection Status'
     username:
       type: string
       label: 'Username'
