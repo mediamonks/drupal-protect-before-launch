@@ -4,7 +4,7 @@ namespace Drupal\Tests\protect_before_launch\Unit\Command;
 
 use Drupal\protect_before_launch\Command\UsernameCommand;
 use Drupal\protect_before_launch\Configuration;
-use Drupal\Tests\UnitTestCase;
+use Drupal\Tests\protect_before_launch\Unit\UnitTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**

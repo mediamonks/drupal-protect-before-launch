@@ -8,7 +8,7 @@ use Drupal\Core\PageCache\ResponsePolicy\KillSwitch;
 use Drupal\Core\Password\PasswordInterface;
 use Drupal\protect_before_launch\Configuration;
 use Drupal\protect_before_launch\StackMiddleware\ProtectHttpKernel;
-use Drupal\Tests\UnitTestCase;
+use Drupal\Tests\protect_before_launch\Unit\UnitTestCase;
 use Drupal\user\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

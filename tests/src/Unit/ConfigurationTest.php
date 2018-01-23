@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\protect_before_launch\Unit;
 
-use Drupal\Tests\UnitTestCase;
-
 /**
  * Class ConfigurationTest
  *
