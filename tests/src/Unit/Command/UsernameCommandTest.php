@@ -27,6 +27,7 @@ class UsernameCommandTest extends UnitTestCase {
   }
 
   public function testSetUsernameInteractive() {
+    $this->verifySymfonyConsoleInputsSupport();
 
     $commandTester = new CommandTester($this->getCommand());
     $commandTester->setInputs(['updated_username']);

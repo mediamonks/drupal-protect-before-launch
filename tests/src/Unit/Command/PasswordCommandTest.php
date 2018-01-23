@@ -27,6 +27,7 @@ class PasswordCommandTest extends UnitTestCase {
   }
 
   public function testSetPasswordInteractive() {
+    $this->verifySymfonyConsoleInputsSupport();
 
     $commandTester = new CommandTester($this->getCommand());
     $commandTester->setInputs(['updated_password']);

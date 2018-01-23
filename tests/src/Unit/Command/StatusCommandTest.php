@@ -27,6 +27,7 @@ class StatusCommandTest extends UnitTestCase {
   }
 
   public function testSetProtectInteractive() {
+    $this->verifySymfonyConsoleInputsSupport();
 
     $commandTester = new CommandTester($this->getCommand());
     $commandTester->setInputs([0]);
