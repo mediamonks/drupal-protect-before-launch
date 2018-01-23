@@ -17,6 +17,12 @@
       "homepage": "https://github.com/slootjes"
     }
   ],
+  "require": {
+    "php": "^5.6|^7.0"
+  },
+  "require-dev": {
+    "drupal/console": "^1.0"
+  },
   "suggest": {
     "drupal/console": "Allow status, username and password to be set by command line interface"
   }

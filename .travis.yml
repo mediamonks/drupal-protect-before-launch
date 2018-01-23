@@ -66,7 +66,6 @@ install:
   # Merge the module requirements with the core requirements
   # (yes this is ugly but it works very well, let us know if there is a better way to do it please)
   - sed -i "s|\"core/composer.json\"|\"core/composer.json\",\"modules/$MODULE_NAME/composer.json\"|" composer.json
-  - composer config platform.php $TRAVIS_PHP_VERSION
   - composer install
   - composer update
 
@@ -82,6 +81,7 @@ before_script:
   - cd $TRAVIS_BUILD_DIR/drupal && drush --yes site-install standard --db-url="mysql://root@127.0.0.1/drupal"
   - cd $TRAVIS_BUILD_DIR/drupal && drush --yes en $MODULE_NAME
   - cd $TRAVIS_BUILD_DIR/drupal && drush --yes en simpletest
+  - cd $TRAVIS_BUILD_DIR/drupal && drush --yes en console
 
   # Export simpletest environment variables
   - export SIMPLETEST_BASE_URL=http://localhost:8080
