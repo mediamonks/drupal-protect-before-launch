@@ -116,7 +116,7 @@ after_success:
   #- if [ "$UPSTREAM" == "1" ]; then echo $DRUPAL_ORG_KEY | base64 --decode > drupalorg_key.pem; fi;
   #- if [ "$UPSTREAM" == "1" ]; then chmod 600 drupalorg_key.pem; fi;
   #- if [ "$UPSTREAM" == "1" ]; then ssh-add drupalorg_key.pem; fi;
-  # if [ "$UPSTREAM" == "1" ]; then git fetch --unshallow; fi;
+  #- if [ "$UPSTREAM" == "1" ]; then git fetch --unshallow; fi;
   #- if [ "$UPSTREAM" == "1" ]; then git config --global user.name "devmonk"; fi;
   #- if [ "$UPSTREAM" == "1" ]; then git config --global user.email devmonk@mediamonks.com; fi;
   #- if [ "$UPSTREAM" == "1" ]; then git config --global push.default matching; fi;
