@@ -125,7 +125,7 @@ class ProtectHttpKernel implements HttpKernelInterface
    */
   protected function getProtectFromEnvironment() {
     if (FALSE !== getenv($this->config->getEnvironmentKey())) {
-      if ($this->config->getEnvironmentValue()) {
+      if (!empty($this->config->getEnvironmentValue())) {
         if (getenv($this->config->getEnvironmentKey()) == $this->config->getEnvironmentValue()) {
           return Configuration::CONFIG_ENABLED;
         }

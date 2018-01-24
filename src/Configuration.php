@@ -47,7 +47,7 @@ class Configuration {
   /**
    * ConfigFactory for corage storage.
    *
-   * @var \Drupal\Core\Config\ConfigFactory
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
@@ -88,9 +88,8 @@ class Configuration {
    */
   protected function set($key, $value) {
     $config = $this->configFactory->getEditable(self::CONFIG_KEY);
-    $config
-      ->set($key, $value)
-      ->save();
+    $config->set($key, $value);
+    $config->save();
     return $this;
   }
 
@@ -119,7 +118,7 @@ class Configuration {
   }
 
   /**
-   * Set, save and hash the password.
+   * Set, hash and save the password.
    *
    * @param string $password
    *   Public function setPassword password.
@@ -128,7 +127,7 @@ class Configuration {
    *   Public function setPassword this.
    */
   public function setPassword($password) {
-    if (strlen($password)) {
+    if (!empty($password)) {
       $this->set('password', password_hash($password, self::CONFIG_HASH));
     }
     return $this;
@@ -343,7 +342,13 @@ class Configuration {
    *   Public function validate bool.
    */
   public function validateCredentials($username, $password) {
-    if (!$username || !$password || $username !== $this->getUsername() || !password_verify($password, $this->getPassword())) {
+    if (empty($username)
+      || empty($password)
+      || empty($this->getUsername())
+      || empty($this->getPassword())
+      || !hash_equals($this->getUsername(), $username)
+      || !password_verify($password, $this->getPassword())
+    ) {
       return FALSE;
     }
     return TRUE;

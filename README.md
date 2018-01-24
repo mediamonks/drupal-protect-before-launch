@@ -9,6 +9,13 @@ Protected your website before launch with HTTP basic authentication.
 The module allows you to set a username and password and enable and
 disable them on the fly.
 
+## System Requirements
+
+You need:
+
+- **PHP >= 5.6.0**
+- **Drupal >= 8.2**
+
 ## Security
 
 If you discover any security related issues, please email devmonk@mediamonks.com instead of using the issue tracker.
