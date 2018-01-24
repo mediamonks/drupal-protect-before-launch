@@ -200,7 +200,6 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $this->assertEquals($response->getContent(), 'Access Denied');
     $this->assertContains('Secured Area', $response->headers->get('www-authenticate'));
     $this->assertContains('no-cache', $response->headers->get('cache-control'));
-    $this->assertContains('private', $response->headers->get('cache-control'));
   }
 
   /**
