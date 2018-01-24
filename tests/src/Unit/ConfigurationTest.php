@@ -38,14 +38,14 @@ class ConfigurationTest extends UnitTestCase {
   public function testSet()
   {
     $editableConfig = $this->createMock(Config::class);
-    $editableConfig->expects($this->at(0), $this->once())->method('set')->with('username', 'my_username');
-    $editableConfig->expects($this->at(2), $this->once())->method('set')->with('password', $this->anything());
-    $editableConfig->expects($this->at(4), $this->once())->method('set')->with('realm', 'my_realm');
-    $editableConfig->expects($this->at(6), $this->once())->method('set')->with('protect', Configuration::CONFIG_ENABLED);
-    $editableConfig->expects($this->at(8), $this->once())->method('set')->with('content', 'my_content');
-    $editableConfig->expects($this->at(10), $this->once())->method('set')->with('environment_key', 'my_environment_key');
-    $editableConfig->expects($this->at(12), $this->once())->method('set')->with('environment_value', 'my_environment_value');
-    $editableConfig->expects($this->at(14), $this->once())->method('set')->with('exclude_paths', 'my_exclude_paths');
+    $editableConfig->expects($this->at(0), $this->once())->method('set')->with('username', 'my_username')->will($this->returnSelf());
+    $editableConfig->expects($this->at(2), $this->once())->method('set')->with('password', $this->anything())->will($this->returnSelf());
+    $editableConfig->expects($this->at(4), $this->once())->method('set')->with('realm', 'my_realm')->will($this->returnSelf());
+    $editableConfig->expects($this->at(6), $this->once())->method('set')->with('protect', Configuration::CONFIG_ENABLED)->will($this->returnSelf());
+    $editableConfig->expects($this->at(8), $this->once())->method('set')->with('content', 'my_content')->will($this->returnSelf());
+    $editableConfig->expects($this->at(10), $this->once())->method('set')->with('environment_key', 'my_environment_key')->will($this->returnSelf());
+    $editableConfig->expects($this->at(12), $this->once())->method('set')->with('environment_value', 'my_environment_value')->will($this->returnSelf());
+    $editableConfig->expects($this->at(14), $this->once())->method('set')->with('exclude_paths', 'my_exclude_paths')->will($this->returnSelf());
 
     $immutableConfig = $this->createMock(ImmutableConfig::class);
 

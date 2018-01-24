@@ -118,8 +118,7 @@ class Configuration {
    *   Configuration
    */
   protected function set($key, $value) {
-    $this->getEditableConfig()->set($key, $value);
-    $this->getEditableConfig()->save();
+    $this->getEditableConfig()->set($key, $value)->save();
 
     return $this;
   }
@@ -159,10 +158,8 @@ class Configuration {
    */
   public function setPassword($password) {
     if (!empty($password)) {
-      $password = password_hash($password, self::CONFIG_HASH);
+      $this->set('password', password_hash($password, self::CONFIG_HASH));
     }
-
-    $this->set('password', $password);
 
     return $this;
   }

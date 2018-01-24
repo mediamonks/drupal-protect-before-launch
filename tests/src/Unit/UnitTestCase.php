@@ -12,7 +12,7 @@ class UnitTestCase extends BaseUnitTestCase
   public function verifySymfonyConsoleInputsSupport()
   {
     if (version_compare(Kernel::VERSION, '3.2', '<')) {
-      $this->markTestSkipped('Requires Symfony 3.');
+      $this->markTestSkipped('Requires Symfony 3.2');
     }
   }
 }
