@@ -35,6 +35,7 @@ class EnvironmentCommandTest extends UnitTestCase {
   }
 
   public function testSetKeyValueInteractive() {
+    $this->verifySymfonyConsoleInputsSupport();
 
     $configuration = $this->createMock(Configuration::class);
     $configuration->expects($this->exactly(1))->method('setEnvironmentKey')->willReturn(TRUE);
@@ -69,7 +70,6 @@ class EnvironmentCommandTest extends UnitTestCase {
   }
 
   public function testSetKeyWithoutValueOption() {
-    $this->verifySymfonyConsoleInputsSupport();
 
     $configuration = $this->createMock(Configuration::class);
     $configuration->expects($this->exactly(1))->method('setEnvironmentKey')->willReturn(TRUE);
