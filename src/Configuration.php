@@ -52,6 +52,16 @@ class Configuration {
   protected $configFactory;
 
   /**
+   * @var \Drupal\Core\Config\ConfigBase
+   */
+  protected $configEditable;
+
+  /**
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $configImmutable;
+
+  /**
    * Configuration constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
@@ -59,6 +69,28 @@ class Configuration {
    */
   public function __construct(ConfigFactoryInterface $configFactory) {
     $this->configFactory = $configFactory;
+  }
+
+  /**
+   * @return \Drupal\Core\Config\Config|\Drupal\Core\Config\ConfigBase
+   */
+  protected function getEditableConfig() {
+    if (empty($this->configEditable)) {
+      $this->configEditable = $this->configFactory->getEditable(self::CONFIG_KEY);
+    }
+
+    return $this->configEditable;
+  }
+
+  /**
+   * @return \Drupal\Core\Config\ImmutableConfig
+   */
+  protected function getImmutableConfig() {
+    if (empty($this->configImmutable)) {
+      $this->configImmutable = $this->configFactory->get(self::CONFIG_KEY);
+    }
+
+    return $this->configImmutable;
   }
 
   /**
@@ -71,8 +103,7 @@ class Configuration {
    *   Protected function array null.
    */
   protected function get($key) {
-    $config = $this->configFactory->get(self::CONFIG_KEY);
-    return $config->get($key);
+    return $this->getImmutableConfig()->get($key);
   }
 
   /**
@@ -84,12 +115,12 @@ class Configuration {
    *   Protected function array value.
    *
    * @return $this
-   *   Protected function set this.
+   *   Configuration
    */
   protected function set($key, $value) {
-    $config = $this->configFactory->getEditable(self::CONFIG_KEY);
-    $config->set($key, $value);
-    $config->save();
+    $this->getEditableConfig()->set($key, $value);
+    $this->getEditableConfig()->save();
+
     return $this;
   }
 
@@ -100,7 +131,7 @@ class Configuration {
    *   Public function setUsername string username.
    *
    * @return $this
-   *   Public function setUsername this.
+   *   Configuration
    */
   public function setUsername($username) {
     $this->set('username', $username);
@@ -124,12 +155,15 @@ class Configuration {
    *   Public function setPassword password.
    *
    * @return $this
-   *   Public function setPassword this.
+   *   Configuration
    */
   public function setPassword($password) {
     if (!empty($password)) {
-      $this->set('password', password_hash($password, self::CONFIG_HASH));
+      $password = password_hash($password, self::CONFIG_HASH);
     }
+
+    $this->set('password', $password);
+
     return $this;
   }
 
@@ -150,7 +184,7 @@ class Configuration {
    *   Public function setRealm realm.
    *
    * @return $this
-   *   Public function setRealm this.
+   *   Configuration
    */
   public function setRealm($realm) {
     $this->set('realm', $realm);
@@ -175,7 +209,7 @@ class Configuration {
    *   Public function setProtect protect.
    *
    * @return $this
-   *   Public functin setProtect this.
+   *   Configuration
    */
   public function setProtect($protect) {
     $this->set('protect', $protect);
@@ -199,7 +233,7 @@ class Configuration {
    *   Public function setContent content.
    *
    * @return $this
-   *   Public function setContent this.
+   *   Configuration
    */
   public function setContent($content) {
     $this->set('content', $content);
@@ -223,7 +257,7 @@ class Configuration {
    *   Public function setEnvironmentKey environmentKey.
    *
    * @return $this
-   *   Public function setContent this.
+   *   Configuration
    */
   public function setEnvironmentKey($environmentKey) {
     $this->set('environment_key', trim($environmentKey));
@@ -247,7 +281,7 @@ class Configuration {
    *   Public function setEnvironmentValue environmentValue.
    *
    * @return $this
-   *   Public function setEnvironmentValue this.
+   *   Configuration
    */
   public function setEnvironmentValue($environmentValue) {
     $this->set('environment_value', trim($environmentValue));
@@ -272,7 +306,7 @@ class Configuration {
    *   Public function setAuthenticationType authenticationType.
    *
    * @return $this
-   *   Public function setAuthenticationType this.
+   *   Configuration
    */
   public function setAuthenticationType($authenticationType) {
     $this->set('authentication_type', $authenticationType);
@@ -297,7 +331,7 @@ class Configuration {
    *   Public function setExcludePaths string paths.
    *
    * @return $this
-   *   Public function setExcludePaths this.
+   *   Configuration
    */
   public function setExcludePaths($paths) {
     $this->set('exclude_paths', str_replace("\r", '', $paths));
@@ -318,7 +352,7 @@ class Configuration {
    * Get the exclude paths as an array.
    *
    * @return array
-   *   Public function getExcludePaths array.
+   *   Configuration
    */
   public function getExcludePaths() {
     $paths = [];

@@ -15,15 +15,31 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class StatusCommandTest extends UnitTestCase {
 
-  public function testSetProtect() {
+  /**
+   * @dataProvider statusProvider
+   * @param $status
+   */
+  public function testSetProtect($status) {
     $commandTester = new CommandTester($this->getCommand());
     $commandTester->execute(
       [
-        'status' => 'enable',
+        'status' => $status,
       ]
     );
 
     $this->assertContains('commands.protect_before_launch.status.messages.success', $commandTester->getDisplay());
+  }
+
+  /**
+   * @return array
+   */
+  public function statusProvider()
+  {
+    return [
+      ['enable'],
+      ['disable'],
+      ['environment']
+    ];
   }
 
   public function testSetProtectInteractive() {

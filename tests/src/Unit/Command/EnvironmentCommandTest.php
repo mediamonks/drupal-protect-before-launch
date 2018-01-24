@@ -34,6 +34,21 @@ class EnvironmentCommandTest extends UnitTestCase {
     $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
   }
 
+  public function testSetKeyValueInteractive() {
+
+    $configuration = $this->createMock(Configuration::class);
+    $configuration->expects($this->exactly(1))->method('setEnvironmentKey')->willReturn(TRUE);
+    $configuration->expects($this->exactly(1))->method('setEnvironmentValue')->willReturn(TRUE);
+
+    $command = new EnvironmentCommand($configuration);
+
+    $commandTester = new CommandTester($command);
+    $commandTester->setInputs(['MY_KEY', 'MY_VALUE']);
+    $commandTester->execute([]);
+
+    $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
+  }
+
   public function testSetKeyWithoutValue() {
     $this->verifySymfonyConsoleInputsSupport();
 

@@ -108,6 +108,19 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $this->assertProtected($response);
   }
 
+  public function testAccessDeniedWhenProtectedFromDrupalUnknownUser()
+  {
+    $request = new Request();
+    $request->headers->set('PHP_AUTH_USER', 'unknown');
+    $request->headers->set('PHP_AUTH_PW', 'bar');
+
+    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+      'authentication_type' => Configuration::CONFIG_AUTH_DRUPAL,
+    ]));
+
+    $this->assertProtected($response);
+  }
+
   public function testAccessGrantedWhenNotProtectedByEnvironment()
   {
     $request = new Request();
@@ -229,7 +242,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $user->method('getPassword')->willReturn('bar');
 
     $storage = $this->createMock(EntityStorageInterface::class);
-    $storage->method('loadByProperties')->willReturn([$user]);
+    $storage->method('loadByProperties')->with($this->equalTo(['name' => 'foo']))->willReturn([$user]);
 
     $entityTypeManager = $this->createMock(EntityTypeManager::class);
     $entityTypeManager->method('getStorage')->willReturn($storage);
