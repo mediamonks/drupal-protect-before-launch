@@ -17,13 +17,16 @@ class AdminFormTest extends BrowserTestBase {
 
   protected function setUp() {
     parent::setUp();
-    $admin_user = $this->drupalCreateUser(['administer modules', 'administer software updates', 'administer site configuration']);
-    $this->drupalLogin($admin_user);
+
+    $admin = $this->drupalCreateUser(['administer modules', 'administer site configuration'], 'administrator', true);
+    $this->drupalLogin($admin);
+    $this->drupalGet('admin/config/protect_before_launch/settings');
+
   }
 
   public function testViewForm() {
-    $output = $this->drupalGet('admin/config/protect_before_launch/settings');
 
+    $output = $this->getSession()->getPage()->getContent();
     $this->assertContains('Status', $output);
     $this->assertContains('Username', $output);
     $this->assertContains('Password', $output);
@@ -45,7 +48,6 @@ class AdminFormTest extends BrowserTestBase {
   }
 
   public function testUpdateForm() {
-    $this->drupalGet('admin/config/protect_before_launch/settings');
     $this->submitForm([
       'username' => 'my_username',
       'realm' => 'My Realm',
@@ -67,7 +69,6 @@ class AdminFormTest extends BrowserTestBase {
   }
 
   public function testEnable() {
-    $this->drupalGet('admin/config/protect_before_launch/settings');
     $this->submitForm([
       'protect' => Configuration::CONFIG_ENABLED,
     ], 'Save Configuration');
