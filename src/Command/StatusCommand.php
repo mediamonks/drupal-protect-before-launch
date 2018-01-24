@@ -55,31 +55,28 @@ class StatusCommand extends AbstractCommand {
       ]);
     }
 
+    $this->getConfig()->setProtect($this->getStatusConfigCode($status));
+
+    $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.status.messages.success'), $status));
+  }
+
+  /**
+   * @param string $status
+   *
+   * @return int
+   */
+  private function getStatusConfigCode($status) {
     switch ($status) {
       case 'disable':
       case 'disabled':
-        $protect = Configuration::CONFIG_DISABLED;
-        break;
+        return Configuration::CONFIG_DISABLED;
 
       case 'enable':
       case 'enabled':
-        $protect = Configuration::CONFIG_ENABLED;
-        break;
+        return Configuration::CONFIG_ENABLED;
 
-      case 'env_enable':
-      case 'env_enabled':
-      case 'enable_env':
-      case 'enabled_env':
-      case 'env':
-      case 'environment':
-        $protect = Configuration::CONFIG_ENV_ENABLED;
-        break;
-    }
-
-    if (isset($protect)) {
-      $this->getConfig()->setProtect($protect);
-
-      $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.status.messages.success'), $status));
+      default:
+        return Configuration::CONFIG_ENV_ENABLED;
     }
   }
 
