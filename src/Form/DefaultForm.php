@@ -102,14 +102,14 @@ class DefaultForm extends ConfigFormBase {
 
     $form['advanced-section']['authentication_type'] = [
       '#type' => 'select',
-      '#title' => $this->t('Authentication'),
+      '#title' => $this->t('Authentication Type'),
       '#default_value' => $this->config->getAuthenticationType(),
       '#required' => TRUE,
       '#options' => [
         Configuration::AUTH_SIMPLE => $this->t('Standalone Username and password'),
         Configuration::AUTH_DRUPAL => $this->t('Drupal user authentication'),
       ],
-      '#description' => $this->t('Select identity provider'),
+      '#description' => $this->t('Select authentication type'),
     ];
 
     $form['advanced-section']['realm'] = [

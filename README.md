@@ -29,43 +29,54 @@ _Admin_ > _Configuration_ > _Development_ > _Protect Before Launch_.
 ### Options
 The module allows you to set the following options:
 
+* Protection
 * Realm
 * Denied Content
+* Authentication Type
 * Username
 * Password
-* Exclude paths
-* System variable
-* System Variable value
-* Identity provider
+* Exclude Paths
+* Environment Key
+* Environment Value
 
-## Auto enable with System variable
+### Protection
 
-Set the enabled mode to Environmental key/value.
-When this mode is set the module will look for the variable and
-when this is set it will enable the password protection.
+Can be disabled, enabled or be controlled by the environment.
 
-When also the System Variable value is set the the module will check
-if the value in the variable is set correctly before enabling.
+When it is set to "Auto Enabled by Environment" the module will
+look for the environment variable and when this is set it will
+enable the password protection.
 
-### Authentication
+When also the Environment Value is set the the module will check
+if the value in the variable is set matches before enabling.
 
-The module allows you to use the drupal user database to authenticate
-against or the simple username and password set directly into the
-module. This username and password is independent from the Drupal
-user database.
+### Realm
 
-### Exclude paths
+This is the message that appears in the authentication box of the browser.
 
-The exclude paths option allows you to set urls or patterns (preg_match).
-When the url matches an exclude path for that path no passwords will be
-requested.
+### Denied Content
 
-### Default username and password
+This is the content that will be outputted to the user if credentials can't be
+validated if the site is currently under protection.
+
+### Authentication Type
+
+The module allows you to use the Drupal user database to authenticate
+against an existing user or use a username and password.
+This username and password  stored is independent from the Drupal user database.
+
+Default username and password is set to:
+
 **username:** username
 
 **password:** password
 
 *Make sure you change these when using the built-in authentication option!*
+
+### Exclude paths
+
+The exclude paths option allows you to set (pcre) patterns.
+When the url matches an exclude path for that path protection will be disabled.
 
 ## Acquia Hosting
 
