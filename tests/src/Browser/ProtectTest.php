@@ -38,7 +38,7 @@ class ProtectTest extends BrowserTestBase {
    * Test protection enabled.
    */
   public function testEnabled() {
-    $this->updateConfig(['protect' => Configuration::CONFIG_ENABLED]);
+    $this->updateConfig(['protect' => Configuration::PROTECT_ENABLED]);
     $this->drupalGet('');
     $this->assertAccessDenied();
   }
@@ -47,7 +47,7 @@ class ProtectTest extends BrowserTestBase {
    * Test protection enabled.
    */
   public function testAuthentication() {
-    $this->updateConfig(['protect' => Configuration::CONFIG_ENABLED]);
+    $this->updateConfig(['protect' => Configuration::PROTECT_ENABLED]);
     $this->drupalGet('');
     $this->assertAccessDenied();
 
@@ -65,7 +65,7 @@ class ProtectTest extends BrowserTestBase {
 
     $this->content = $this->realm = time();
     $this->updateConfig([
-      'protect' => Configuration::CONFIG_ENABLED,
+      'protect' => Configuration::PROTECT_ENABLED,
       'content' => $this->content,
       'realm' => $this->realm,
     ]);

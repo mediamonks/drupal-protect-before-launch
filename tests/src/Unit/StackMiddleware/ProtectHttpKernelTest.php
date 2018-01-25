@@ -25,7 +25,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
   public function testAccessGrantedWhenDisabled()
   {
     $response = $this->dispatchRequestWithConfig(new Request(), array_merge($this->getProtectedConfig(), [
-      'protect' => Configuration::CONFIG_DISABLED
+      'protect' => Configuration::PROTECT_DISABLED
     ]));
     $this->assertEmpty($response);
   }
@@ -43,7 +43,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $request->headers->set('PHP_AUTH_PW', 'bar');
 
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'authentication_type' => Configuration::CONFIG_AUTH_SIMPLE,
+      'authentication_type' => Configuration::AUTH_SIMPLE,
       'username' => 'foo',
       'password' => password_hash('bar', PASSWORD_DEFAULT)
     ]));
@@ -58,7 +58,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $request->headers->set('PHP_AUTH_PW', 'ber');
 
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'authentication_type' => Configuration::CONFIG_AUTH_SIMPLE,
+      'authentication_type' => Configuration::AUTH_SIMPLE,
       'username' => 'foo',
       'password' => password_hash('bar', PASSWORD_DEFAULT)
     ]));
@@ -89,7 +89,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $request->headers->set('PHP_AUTH_PW', 'bar');
 
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'authentication_type' => Configuration::CONFIG_AUTH_DRUPAL,
+      'authentication_type' => Configuration::AUTH_DRUPAL,
     ]));
 
     $this->assertEmpty($response);
@@ -102,7 +102,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $request->headers->set('PHP_AUTH_PW', 'ber');
 
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'authentication_type' => Configuration::CONFIG_AUTH_DRUPAL,
+      'authentication_type' => Configuration::AUTH_DRUPAL,
     ]));
 
     $this->assertProtected($response);
@@ -115,7 +115,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $request->headers->set('PHP_AUTH_PW', 'bar');
 
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'authentication_type' => Configuration::CONFIG_AUTH_DRUPAL,
+      'authentication_type' => Configuration::AUTH_DRUPAL,
     ]));
 
     $this->assertProtected($response);
@@ -125,7 +125,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
   {
     $request = new Request();
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'protect' => Configuration::CONFIG_ENV_ENABLED
+      'protect' => Configuration::PROTECT_ENV_ENABLED
     ]));
 
     $this->assertEmpty($response);
@@ -137,7 +137,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
 
     $request = new Request();
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'protect' => Configuration::CONFIG_ENV_ENABLED,
+      'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_ENABLED'
     ]));
 
@@ -153,7 +153,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $request->headers->set('PHP_AUTH_PW', 'bar');
 
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'protect' => Configuration::CONFIG_ENV_ENABLED,
+      'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_ENABLED'
     ]));
 
@@ -169,7 +169,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $request->headers->set('PHP_AUTH_PW', 'ber');
 
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'protect' => Configuration::CONFIG_ENV_ENABLED,
+      'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_ENABLED'
     ]));
 
@@ -182,7 +182,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
 
     $request = new Request();
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'protect' => Configuration::CONFIG_ENV_ENABLED,
+      'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_PROTECT',
       'environment_value' => 'ENABLED'
     ]));
@@ -196,7 +196,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
 
     $request = new Request();
     $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
-      'protect' => Configuration::CONFIG_ENV_ENABLED,
+      'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_PROTECT',
       'environment_value' => 'ENABLED'
     ]));
@@ -221,7 +221,7 @@ class ProtectHttpKernelTest extends UnitTestCase {
   private function getProtectedConfig()
   {
     return [
-      'protect' => Configuration::CONFIG_ENABLED,
+      'protect' => Configuration::PROTECT_ENABLED,
       'content' => 'Access Denied',
       'realm' => 'Secured Area'
     ];
@@ -242,7 +242,17 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $user->method('getPassword')->willReturn('bar');
 
     $storage = $this->createMock(EntityStorageInterface::class);
-    $storage->method('loadByProperties')->with($this->equalTo(['name' => 'foo']))->willReturn([$user]);
+    $storage->method('loadByProperties')->with($this->logicalOr(
+      $this->equalTo(['name' => 'foo']),
+      $this->equalTo(['name' => 'unknown'])
+    ))->will($this->returnCallback(function ($value) use($user) {
+      switch($value['name']) {
+        case 'foo':
+          return [$user];
+        default:
+          return [];
+      }
+    }));
 
     $entityTypeManager = $this->createMock(EntityTypeManager::class);
     $entityTypeManager->method('getStorage')->willReturn($storage);

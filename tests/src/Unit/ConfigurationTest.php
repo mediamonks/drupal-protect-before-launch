@@ -27,7 +27,7 @@ class ConfigurationTest extends UnitTestCase {
   {
     $configuration = $this->getConfiguration([
       'username' => 'foo',
-      'password' => password_hash('bar', Configuration::CONFIG_HASH)
+      'password' => password_hash('bar', Configuration::PASSWORD_HASH_METHOD)
     ]);
     $this->assertTrue($configuration->validateCredentials('foo', 'bar'));
     $this->assertFalse($configuration->validateCredentials('foo', 'ber'));
@@ -41,11 +41,12 @@ class ConfigurationTest extends UnitTestCase {
     $editableConfig->expects($this->at(0), $this->once())->method('set')->with('username', 'my_username')->will($this->returnSelf());
     $editableConfig->expects($this->at(2), $this->once())->method('set')->with('password', $this->anything())->will($this->returnSelf());
     $editableConfig->expects($this->at(4), $this->once())->method('set')->with('realm', 'my_realm')->will($this->returnSelf());
-    $editableConfig->expects($this->at(6), $this->once())->method('set')->with('protect', Configuration::CONFIG_ENABLED)->will($this->returnSelf());
+    $editableConfig->expects($this->at(6), $this->once())->method('set')->with('protect', Configuration::PROTECT_ENABLED)->will($this->returnSelf());
     $editableConfig->expects($this->at(8), $this->once())->method('set')->with('content', 'my_content')->will($this->returnSelf());
     $editableConfig->expects($this->at(10), $this->once())->method('set')->with('environment_key', 'my_environment_key')->will($this->returnSelf());
     $editableConfig->expects($this->at(12), $this->once())->method('set')->with('environment_value', 'my_environment_value')->will($this->returnSelf());
     $editableConfig->expects($this->at(14), $this->once())->method('set')->with('exclude_paths', 'my_exclude_paths')->will($this->returnSelf());
+    $editableConfig->expects($this->at(16), $this->once())->method('set')->with('authentication_type', Configuration::AUTH_DRUPAL)->will($this->returnSelf());
 
     $immutableConfig = $this->createMock(ImmutableConfig::class);
 
@@ -57,11 +58,32 @@ class ConfigurationTest extends UnitTestCase {
     $configuration->setUsername('my_username');
     $configuration->setPassword('my_password');
     $configuration->setRealm('my_realm');
-    $configuration->setProtect(Configuration::CONFIG_ENABLED);
+    $configuration->setProtect(Configuration::PROTECT_ENABLED);
     $configuration->setContent('my_content');
     $configuration->setEnvironmentKey('my_environment_key');
     $configuration->setEnvironmentValue('my_environment_value');
     $configuration->setExcludePaths('my_exclude_paths');
+    $configuration->setAuthenticationType(Configuration::AUTH_DRUPAL);
+  }
+
+  public function testSetProtectWithInvalidValue()
+  {
+    $this->setExpectedException(\InvalidArgumentException::class);
+
+    $configuration = $this->createMock(ConfigFactoryInterface::class);
+
+    $configuration = new Configuration($configuration);
+    $configuration->setProtect(9001);
+  }
+
+  public function testSetAuthenticationTypeWithInvalidValue()
+  {
+    $this->setExpectedException(\InvalidArgumentException::class);
+
+    $configuration = $this->createMock(ConfigFactoryInterface::class);
+
+    $configuration = new Configuration($configuration);
+    $configuration->setAuthenticationType(9001);
   }
 
   /**

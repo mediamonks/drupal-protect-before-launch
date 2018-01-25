@@ -17,32 +17,32 @@ class Configuration {
   /**
    * Always disabled.
    */
-  const CONFIG_DISABLED = 0;
+  const PROTECT_DISABLED = 0;
 
   /**
    * Always enabled.
    */
-  const CONFIG_ENABLED = 1;
+  const PROTECT_ENABLED = 1;
 
   /**
    * Enabled only when env variable is set.
    */
-  const CONFIG_ENV_ENABLED = 2;
+  const PROTECT_ENV_ENABLED = 2;
 
   /**
    * Simple authenticate.
    */
-  const CONFIG_AUTH_SIMPLE = 1;
+  const AUTH_SIMPLE = 1;
 
   /**
    * Drupal authenticate.
    */
-  const CONFIG_AUTH_DRUPAL = 2;
+  const AUTH_DRUPAL = 2;
 
   /**
    * Set the config hash algorithm.
    */
-  const CONFIG_HASH = PASSWORD_BCRYPT;
+  const PASSWORD_HASH_METHOD = PASSWORD_BCRYPT;
 
   /**
    * ConfigFactory for corage storage.
@@ -65,7 +65,7 @@ class Configuration {
    * Configuration constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
-   *   Public function configFactory.
+   *   Drupal config factory.
    */
   public function __construct(ConfigFactoryInterface $configFactory) {
     $this->configFactory = $configFactory;
@@ -97,10 +97,10 @@ class Configuration {
    * Generic getter config values.
    *
    * @param string $key
-   *   Protected string key.
+   *   Config key.
    *
    * @return array|mixed|null
-   *   Protected function array null.
+   *   Config value.
    */
   protected function get($key) {
     return $this->getImmutableConfig()->get($key);
@@ -110,9 +110,9 @@ class Configuration {
    * Generic setter config values.
    *
    * @param string $key
-   *   Protected function set string key.
+   *   Config key.
    * @param array|mixed|null $value
-   *   Protected function array value.
+   *   Config value.
    *
    * @return $this
    *   Configuration
@@ -127,7 +127,7 @@ class Configuration {
    * Set and save the username.
    *
    * @param string $username
-   *   Public function setUsername string username.
+   *   Username.
    *
    * @return $this
    *   Configuration
@@ -151,14 +151,14 @@ class Configuration {
    * Set, hash and save the password.
    *
    * @param string $password
-   *   Public function setPassword password.
+   *   Password.
    *
    * @return $this
    *   Configuration
    */
   public function setPassword($password) {
     if (!empty($password)) {
-      $this->set('password', password_hash($password, self::CONFIG_HASH));
+      $this->set('password', password_hash($password, self::PASSWORD_HASH_METHOD));
     }
 
     return $this;
@@ -168,7 +168,7 @@ class Configuration {
    * Get the hashed password.
    *
    * @return string|null
-   *   Public function getPassword string.
+   *   Password
    */
   public function getPassword() {
     return $this->get('password');
@@ -178,7 +178,7 @@ class Configuration {
    * Set and save the realm.
    *
    * @param mixed $realm
-   *   Public function setRealm realm.
+   *   Realm.
    *
    * @return $this
    *   Configuration
@@ -193,7 +193,7 @@ class Configuration {
    * Get the Realm.
    *
    * @return string|null
-   *   Public function getRealm string.
+   *   Realm.
    */
   public function getRealm() {
     return str_replace('"', '\"', $this->get('realm'));
@@ -203,12 +203,13 @@ class Configuration {
    * Set protect status.
    *
    * @param mixed $protect
-   *   Public function setProtect protect.
+   *   Protect setting.
    *
    * @return $this
    *   Configuration
    */
   public function setProtect($protect) {
+    $this->assertValidOption($protect, [self::PROTECT_ENABLED, self::PROTECT_DISABLED, self::PROTECT_ENV_ENABLED]);
     $this->set('protect', $protect);
     return $this;
   }
@@ -216,18 +217,18 @@ class Configuration {
   /**
    * Get protect status.
    *
-   * @return bool
-   *   Public function getProtect bool.
+   * @return integer
+   *   Protect type
    */
   public function getProtect() {
     return $this->get('protect');
   }
 
   /**
-   * Set escape content.
+   * Set denied content.
    *
    * @param string $content
-   *   Public function setContent content.
+   *   Content.
    *
    * @return $this
    *   Configuration
@@ -238,10 +239,10 @@ class Configuration {
   }
 
   /**
-   * Get the escape content.
+   * Get the denied content.
    *
    * @return string|null
-   *   Public function getContent string.
+   *   Content.
    */
   public function getContent() {
     return $this->get('content');
@@ -251,7 +252,7 @@ class Configuration {
    * Set the Environment Key.
    *
    * @param string $environmentKey
-   *   Public function setEnvironmentKey environmentKey.
+   *   Environment key.
    *
    * @return $this
    *   Configuration
@@ -265,7 +266,7 @@ class Configuration {
    * Get Environment Key.
    *
    * @return string|null
-   *   Public function setContent this.
+   *   Environment key.
    */
   public function getEnvironmentKey() {
     return $this->get('environment_key');
@@ -275,7 +276,7 @@ class Configuration {
    * Set the Environment Value.
    *
    * @param string $environmentValue
-   *   Public function setEnvironmentValue environmentValue.
+   *   Environment value.
    *
    * @return $this
    *   Configuration
@@ -290,7 +291,7 @@ class Configuration {
    * Get Environment Value.
    *
    * @return string|null
-   *   Public function getEnvironmentValue this.
+   *   Environment value.
    */
   public function getEnvironmentValue() {
     return $this->get('environment_value');
@@ -300,22 +301,33 @@ class Configuration {
    * Set the Authentication Value.
    *
    * @param string $authenticationType
-   *   Public function setAuthenticationType authenticationType.
+   *   Authentication Type.
    *
    * @return $this
    *   Configuration
    */
   public function setAuthenticationType($authenticationType) {
+    $this->assertValidOption($authenticationType, [self::AUTH_SIMPLE, self::AUTH_DRUPAL]);
     $this->set('authentication_type', $authenticationType);
     return $this;
+  }
 
+  /**
+   * @param $value
+   * @param array $options
+   */
+  private function assertValidOption($value, array $options)
+  {
+    if (!in_array((int)$value, $options, true)) {
+      throw new \InvalidArgumentException('Unsupported option');
+    }
   }
 
   /**
    * Get Authentication Value.
    *
    * @return string|null
-   *   Public function getEnvironmentValue this.
+   *   Authentication Type.
    */
   public function getAuthenticationType() {
     return $this->get('authentication_type');
@@ -325,7 +337,7 @@ class Configuration {
    * Set exclude paths.
    *
    * @param string $paths
-   *   Public function setExcludePaths string paths.
+   *   Exclude Paths.
    *
    * @return $this
    *   Configuration
@@ -339,7 +351,7 @@ class Configuration {
    * Get the exclude paths as text.
    *
    * @return string|null
-   *   Public function getExcludePathsText string.
+   *   Exclude Paths.
    */
   public function getExcludePathsText() {
     return $this->get('exclude_paths');
@@ -365,12 +377,12 @@ class Configuration {
    * Verify username and password against saved credentials.
    *
    * @param string $username
-   *   Public function validate string username.
+   *   Username.
    * @param string $password
-   *   Public function validate string password.
+   *   Password.
    *
    * @return bool
-   *   Public function validate bool.
+   *   Validation result.
    */
   public function validateCredentials($username, $password) {
     if (empty($username)

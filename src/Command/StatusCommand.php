@@ -69,14 +69,14 @@ class StatusCommand extends AbstractCommand {
     switch ($status) {
       case 'disable':
       case 'disabled':
-        return Configuration::CONFIG_DISABLED;
+        return Configuration::PROTECT_DISABLED;
 
       case 'enable':
       case 'enabled':
-        return Configuration::CONFIG_ENABLED;
+        return Configuration::PROTECT_ENABLED;
 
       default:
-        return Configuration::CONFIG_ENV_ENABLED;
+        return Configuration::PROTECT_ENV_ENABLED;
     }
   }
 

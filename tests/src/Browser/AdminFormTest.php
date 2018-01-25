@@ -37,11 +37,11 @@ class AdminFormTest extends BrowserTestBase {
     $this->assertContains('Environment Key', $output);
     $this->assertContains('Environment Value', $output);
 
-    $this->assertSession()->fieldValueEquals('protect', Configuration::CONFIG_DISABLED);
+    $this->assertSession()->fieldValueEquals('protect', Configuration::PROTECT_DISABLED);
     $this->assertSession()->fieldValueEquals('username', 'username');
     $this->assertSession()->fieldValueEquals('content', 'Access Denied');
     $this->assertSession()->fieldValueEquals('realm', 'Protected Site');
-    $this->assertSession()->fieldValueEquals('authentication_type', Configuration::CONFIG_AUTH_SIMPLE);
+    $this->assertSession()->fieldValueEquals('authentication_type', Configuration::AUTH_SIMPLE);
     $this->assertSession()->fieldValueEquals('exclude_paths', '');
     $this->assertSession()->fieldValueEquals('environment_key', 'AH_NON_PRODUCTION');
     $this->assertSession()->fieldValueEquals('environment_value', '');
@@ -58,11 +58,11 @@ class AdminFormTest extends BrowserTestBase {
 
     $output = $this->drupalGet('admin/config/protect_before_launch/settings');
     $this->assertContains('Username', $output);
-    $this->assertSession()->fieldValueEquals('protect', Configuration::CONFIG_DISABLED);
+    $this->assertSession()->fieldValueEquals('protect', Configuration::PROTECT_DISABLED);
     $this->assertSession()->fieldValueEquals('username', 'my_username');
     $this->assertSession()->fieldValueEquals('content', 'My Protected Content');
     $this->assertSession()->fieldValueEquals('realm', 'My Realm');
-    $this->assertSession()->fieldValueEquals('authentication_type', Configuration::CONFIG_AUTH_SIMPLE);
+    $this->assertSession()->fieldValueEquals('authentication_type', Configuration::AUTH_SIMPLE);
     $this->assertSession()->fieldValueEquals('exclude_paths', '');
     $this->assertSession()->fieldValueEquals('environment_key', 'MY_KEY');
     $this->assertSession()->fieldValueEquals('environment_value', 'MY_VALUE');
@@ -70,7 +70,7 @@ class AdminFormTest extends BrowserTestBase {
 
   public function testEnable() {
     $this->submitForm([
-      'protect' => Configuration::CONFIG_ENABLED,
+      'protect' => Configuration::PROTECT_ENABLED,
     ], 'Save Configuration');
 
     $output = $this->drupalGet('admin/config/protect_before_launch/settings');

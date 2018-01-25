@@ -22,7 +22,7 @@ class DefaultForm extends ConfigFormBase {
   protected $config;
 
   /**
-   * Constructs a \Drupal\system\ConfigFormBase object.
+   * Constructs a \Drupal\protect_before_launch\Form object.
    *
    * @param \Drupal\protect_before_launch\Configuration $config
    *   The factory for configuration objects.
@@ -66,9 +66,9 @@ class DefaultForm extends ConfigFormBase {
       '#default_value' => $this->config->getProtect(),
       '#required' => TRUE,
       '#options' => [
-        Configuration::CONFIG_DISABLED => $this->t('Disabled'),
-        Configuration::CONFIG_ENABLED => $this->t('Enabled'),
-        Configuration::CONFIG_ENV_ENABLED => $this->t('Auto Enabled by Environment key/value'),
+        Configuration::PROTECT_DISABLED => $this->t('Disabled'),
+        Configuration::PROTECT_ENABLED => $this->t('Enabled'),
+        Configuration::PROTECT_ENV_ENABLED => $this->t('Auto Enabled by Environment key/value'),
       ],
       '#description' => $this->t('Enable the login for the site.'),
     ];
@@ -89,7 +89,7 @@ class DefaultForm extends ConfigFormBase {
 
     $form['advanced-section'] = [
       '#type' => 'details',
-      '#title' => t('Advanced settings'),
+      '#title' => $this->t('Advanced settings'),
       '#group' => 'advanced',
     ];
 
@@ -99,8 +99,8 @@ class DefaultForm extends ConfigFormBase {
       '#default_value' => $this->config->getAuthenticationType(),
       '#required' => TRUE,
       '#options' => [
-        Configuration::CONFIG_AUTH_SIMPLE => $this->t('Standalone Username and password'),
-        Configuration::CONFIG_AUTH_DRUPAL => $this->t('Drupal user authentication'),
+        Configuration::AUTH_SIMPLE => $this->t('Standalone Username and password'),
+        Configuration::AUTH_DRUPAL => $this->t('Drupal user authentication'),
       ],
       '#description' => $this->t('Select identity provider'),
     ];

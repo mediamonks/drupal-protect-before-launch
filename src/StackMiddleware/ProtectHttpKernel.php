@@ -109,10 +109,10 @@ class ProtectHttpKernel implements HttpKernelInterface
    */
   protected function shouldProtect() {
     $status = $this->config->getProtect();
-    if (Configuration::CONFIG_ENABLED == $status) {
+    if (Configuration::PROTECT_ENABLED == $status) {
       return TRUE;
     }
-    elseif (Configuration::CONFIG_ENV_ENABLED == $status) {
+    elseif (Configuration::PROTECT_ENV_ENABLED == $status) {
       return $this->getProtectFromEnvironment();
     }
   }
@@ -127,17 +127,17 @@ class ProtectHttpKernel implements HttpKernelInterface
     if (FALSE !== getenv($this->config->getEnvironmentKey())) {
       if (!empty($this->config->getEnvironmentValue())) {
         if (getenv($this->config->getEnvironmentKey()) == $this->config->getEnvironmentValue()) {
-          return Configuration::CONFIG_ENABLED;
+          return Configuration::PROTECT_ENABLED;
         }
         else {
-          return Configuration::CONFIG_DISABLED;
+          return Configuration::PROTECT_DISABLED;
         }
       }
       else {
-        return Configuration::CONFIG_ENABLED;
+        return Configuration::PROTECT_ENABLED;
       }
     }
-    return Configuration::CONFIG_DISABLED;
+    return Configuration::PROTECT_DISABLED;
   }
 
   /**
@@ -153,7 +153,7 @@ class ProtectHttpKernel implements HttpKernelInterface
     if (empty($request->getUser()) || empty($request->getPassword())) {
       return FALSE;
     }
-    if (Configuration::CONFIG_AUTH_SIMPLE == $this->config->getAuthenticationType()) {
+    if (Configuration::AUTH_SIMPLE == $this->config->getAuthenticationType()) {
       return $this->authenticateCredentialsWithConfig($request->getUser(), $request->getPassword());
     }
     else {
