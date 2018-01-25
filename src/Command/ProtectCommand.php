@@ -9,7 +9,7 @@ use Drupal\Console\Annotations\DrupalCommand;
 use Drupal\protect_before_launch\Configuration;
 
 /**
- * Class StatusCommand.
+ * Class ProtectCommand.
  *
  * @package Drupal\protect_before_launch
  *
@@ -18,19 +18,19 @@ use Drupal\protect_before_launch\Configuration;
  *     extensionType="module"
  * )
  */
-class StatusCommand extends AbstractCommand {
+class ProtectCommand extends AbstractCommand {
 
-  const ARGUMENT_STATUS = 'status';
+  const ARGUMENT_PROTECT = 'protect';
 
   /**
    * {@inheritdoc}
    */
   protected function configure() {
     $this
-      ->setName('protect_before_launch:status')
+      ->setName('protect_before_launch:protect')
       ->setAliases(['protect_before_launch:enabled'])
-      ->addArgument(self::ARGUMENT_STATUS, InputArgument::OPTIONAL)
-      ->setDescription($this->trans('commands.protect_before_launch.status.description'));
+      ->addArgument(self::ARGUMENT_PROTECT, InputArgument::OPTIONAL)
+      ->setDescription($this->trans('commands.protect_before_launch.protect.description'));
   }
 
   /**
@@ -39,7 +39,7 @@ class StatusCommand extends AbstractCommand {
   protected function execute(InputInterface $input, OutputInterface $output) {
     parent::execute($input, $output);
 
-    $status = $input->getArgument(self::ARGUMENT_STATUS);
+    $status = $input->getArgument(self::ARGUMENT_PROTECT);
     $options = [
       'disable', 'disabled',
       'enable', 'enabled',
@@ -48,7 +48,7 @@ class StatusCommand extends AbstractCommand {
       'env', 'environment'
     ];
     if (!in_array($status, $options)) {
-      $status = $this->getIo()->choice($this->trans('commands.protect_before_launch.status.messages.question'), [
+      $status = $this->getIo()->choice($this->trans('commands.protect_before_launch.protect.messages.question'), [
         'disabled',
         'enabled',
         'environment'
@@ -57,7 +57,7 @@ class StatusCommand extends AbstractCommand {
 
     $this->getConfig()->setProtect($this->getStatusConfigCode($status));
 
-    $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.status.messages.success'), $status));
+    $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.protect.messages.success'), $status));
   }
 
   /**

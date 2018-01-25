@@ -26,7 +26,7 @@ class DefaultFormTest extends UnitTestCase
     $configuration = $this->createMock(Configuration::class);
 
     $form = new DefaultForm($configuration);
-    $this->assertEquals('admin_form', $form->getFormId());
+    $this->assertEquals('protect_before_launch_form', $form->getFormId());
   }
 
   public function testBuildForm()
@@ -74,5 +74,17 @@ class DefaultFormTest extends UnitTestCase
     $formData = [];
     $form = new DefaultForm($configuration);
     $form->submitForm($formData, $formState);
+  }
+
+  public function testGetEditableConfigNames()
+  {
+    $class = new \ReflectionClass(DefaultForm::class);
+    $method = $class->getMethod('getEditableConfigNames');
+    $method->setAccessible(true);
+
+    $configuration = $this->createMock(Configuration::class);
+
+    $form = new DefaultForm($configuration);
+    $this->assertEquals([Configuration::CONFIG_KEY], $method->invokeArgs($form, []));
   }
 }

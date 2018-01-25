@@ -15,6 +15,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DefaultForm extends ConfigFormBase {
 
   /**
+   * Form ID.
+   *
+   * @var string
+   */
+  const FORM_ID = 'protect_before_launch_form';
+
+  /**
    * Protected config.
    *
    * @var \Drupal\protect_before_launch\Configuration
@@ -53,7 +60,7 @@ class DefaultForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'admin_form';
+    return self::FORM_ID;
   }
 
   /**
@@ -68,7 +75,7 @@ class DefaultForm extends ConfigFormBase {
       '#options' => [
         Configuration::PROTECT_DISABLED => $this->t('Disabled'),
         Configuration::PROTECT_ENABLED => $this->t('Enabled'),
-        Configuration::PROTECT_ENV_ENABLED => $this->t('Auto Enabled by Environment key/value'),
+        Configuration::PROTECT_ENV_ENABLED => $this->t('Auto Enabled by Environment'),
       ],
       '#description' => $this->t('Enable the login for the site.'),
     ];
@@ -134,7 +141,7 @@ class DefaultForm extends ConfigFormBase {
       '#title' => $this->t('Environment Key'),
       '#default_value' => $this->config->getEnvironmentKey() ?: 'AH_NON_PRODUCTION',
       '#required' => TRUE,
-      '#description' => $this->t('The Environment variable to auto enable'),
+      '#description' => $this->t('The Environment key to auto enable'),
     ];
 
     $form['advanced-section']['environment_value'] = [
