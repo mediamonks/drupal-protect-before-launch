@@ -15,15 +15,21 @@ class AdminFormTest extends BrowserTestBase {
 
   protected static $modules = ['protect_before_launch'];
 
+  /**
+   * Setup admin user.
+   */
   protected function setUp() {
     parent::setUp();
 
-    $admin = $this->drupalCreateUser(['administer modules', 'administer site configuration'], 'administrator', true);
+    $admin = $this->drupalCreateUser(['administer modules', 'administer site configuration'], 'administrator', TRUE);
     $this->drupalLogin($admin);
     $this->drupalGet('admin/config/protect_before_launch/settings');
 
   }
 
+  /**
+   * Test admin is able to view the settings form.
+   */
   public function testViewForm() {
 
     $output = $this->getSession()->getPage()->getContent();
@@ -47,6 +53,9 @@ class AdminFormTest extends BrowserTestBase {
     $this->assertSession()->fieldValueEquals('environment_value', '');
   }
 
+  /**
+   * Test admin is able to update the settings form.
+   */
   public function testUpdateForm() {
     $this->submitForm([
       'username' => 'my_username',
@@ -68,6 +77,9 @@ class AdminFormTest extends BrowserTestBase {
     $this->assertSession()->fieldValueEquals('environment_value', 'MY_VALUE');
   }
 
+  /**
+   * Test admin is able to enable the form.
+   */
   public function testEnable() {
     $this->submitForm([
       'protect' => Configuration::PROTECT_ENABLED,
@@ -82,4 +94,5 @@ class AdminFormTest extends BrowserTestBase {
     ]);
     $this->assertContains('Username', $output);
   }
+
 }

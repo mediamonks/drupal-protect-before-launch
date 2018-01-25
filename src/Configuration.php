@@ -45,24 +45,28 @@ class Configuration {
   const PASSWORD_HASH_METHOD = PASSWORD_BCRYPT;
 
   /**
-   * ConfigFactory for corage storage.
+   * ConfigFactory for config storage.
    *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
   /**
+   * Editable config.
+   *
    * @var \Drupal\Core\Config\ConfigBase
    */
   protected $configEditable;
 
   /**
+   * Immutable config.
+   *
    * @var \Drupal\Core\Config\ImmutableConfig
    */
   protected $configImmutable;
 
   /**
-   * Configuration constructor.
+   * Constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Drupal config factory.
@@ -72,7 +76,10 @@ class Configuration {
   }
 
   /**
+   * Get editable config.
+   *
    * @return \Drupal\Core\Config\Config|\Drupal\Core\Config\ConfigBase
+   *   Editable config.
    */
   protected function getEditableConfig() {
     if (empty($this->configEditable)) {
@@ -83,7 +90,10 @@ class Configuration {
   }
 
   /**
+   * Get immutable config.
+   *
    * @return \Drupal\Core\Config\ImmutableConfig
+   *   Immutable config.
    */
   protected function getImmutableConfig() {
     if (empty($this->configImmutable)) {
@@ -209,7 +219,11 @@ class Configuration {
    *   Configuration
    */
   public function setProtect($protect) {
-    $this->assertValidOption($protect, [self::PROTECT_ENABLED, self::PROTECT_DISABLED, self::PROTECT_ENV_ENABLED]);
+    $this->assertValidOption($protect, [
+      self::PROTECT_ENABLED,
+      self::PROTECT_DISABLED,
+      self::PROTECT_ENV_ENABLED
+    ]);
     $this->set('protect', $protect);
     return $this;
   }
@@ -217,7 +231,7 @@ class Configuration {
   /**
    * Get protect status.
    *
-   * @return integer
+   * @return int
    *   Protect type
    */
   public function getProtect() {
@@ -307,18 +321,24 @@ class Configuration {
    *   Configuration
    */
   public function setAuthenticationType($authenticationType) {
-    $this->assertValidOption($authenticationType, [self::AUTH_SIMPLE, self::AUTH_DRUPAL]);
+    $this->assertValidOption($authenticationType, [
+      self::AUTH_SIMPLE,
+      self::AUTH_DRUPAL
+    ]);
     $this->set('authentication_type', $authenticationType);
     return $this;
   }
 
   /**
-   * @param $value
+   * Assert the chosen option is valid.
+   *
+   * @param string $value
+   *   User input.
    * @param array $options
+   *   Allowed list of options.
    */
-  private function assertValidOption($value, array $options)
-  {
-    if (!in_array((int)$value, $options, true)) {
+  private function assertValidOption($value, array $options) {
+    if (!in_array((int) $value, $options, TRUE)) {
       throw new \InvalidArgumentException('Unsupported option');
     }
   }

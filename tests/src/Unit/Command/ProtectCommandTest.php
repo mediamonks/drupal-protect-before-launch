@@ -8,7 +8,7 @@ use Drupal\Tests\protect_before_launch\Unit\UnitTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class ProtectCommandTest
+ * Class ProtectCommandTest.
  *
  * @group tests
  * @package Drupal\Tests\protect_before_launch\Unit\Command
@@ -16,8 +16,12 @@ use Symfony\Component\Console\Tester\CommandTester;
 class ProtectCommandTest extends UnitTestCase {
 
   /**
+   * Test set protect status.
+   *
+   * @param string $status
+   *   Status to set.
+   *
    * @dataProvider statusProvider
-   * @param $status
    */
   public function testSetProtect($status) {
     $commandTester = new CommandTester($this->getCommand());
@@ -31,10 +35,12 @@ class ProtectCommandTest extends UnitTestCase {
   }
 
   /**
+   * Return statuses to test.
+   *
    * @return array
+   *   Statuses.
    */
-  public function statusProvider()
-  {
+  public function statusProvider() {
     return [
       ['enable'],
       ['disable'],
@@ -42,6 +48,9 @@ class ProtectCommandTest extends UnitTestCase {
     ];
   }
 
+  /**
+   * Test setting protect status interactively.
+   */
   public function testSetProtectInteractive() {
     $this->verifySymfonyConsoleInputsSupport();
 
@@ -53,11 +62,17 @@ class ProtectCommandTest extends UnitTestCase {
     $this->assertContains('commands.protect_before_launch.protect.messages.success', $commandTester->getDisplay());
   }
 
-  private function getCommand()
-  {
+  /**
+   * Get command to test.
+   *
+   * @return \Drupal\protect_before_launch\Command\ProtectCommand
+   *   Command
+   */
+  private function getCommand() {
     $configuration = $this->createMock(Configuration::class);
-    $configuration->expects($this->exactly(1))->method('setProtect')->willReturn(true);
+    $configuration->expects($this->exactly(1))->method('setProtect')->willReturn(TRUE);
 
     return new ProtectCommand($configuration);
   }
+
 }

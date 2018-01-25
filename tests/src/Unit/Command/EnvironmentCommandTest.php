@@ -8,13 +8,16 @@ use Drupal\Tests\protect_before_launch\Unit\UnitTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class EnvironmentCommandTest
+ * Class EnvironmentCommandTest.
  *
  * @group tests
  * @package Drupal\Tests\protect_before_launch\Unit\Command
  */
 class EnvironmentCommandTest extends UnitTestCase {
 
+  /**
+   * Test setting of the environment key.
+   */
   public function testSetKeyValue() {
 
     $configuration = $this->createMock(Configuration::class);
@@ -34,6 +37,9 @@ class EnvironmentCommandTest extends UnitTestCase {
     $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
   }
 
+  /**
+   * Test setting the environment key and value interactively.
+   */
   public function testSetKeyValueInteractive() {
     $this->verifySymfonyConsoleInputsSupport();
 
@@ -50,6 +56,9 @@ class EnvironmentCommandTest extends UnitTestCase {
     $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
   }
 
+  /**
+   * Test setting the environment key without a value.
+   */
   public function testSetKeyWithoutValue() {
     $this->verifySymfonyConsoleInputsSupport();
 
@@ -69,6 +78,9 @@ class EnvironmentCommandTest extends UnitTestCase {
     $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
   }
 
+  /**
+   * Test setting the environment key without value.
+   */
   public function testSetKeyWithoutValueOption() {
 
     $configuration = $this->createMock(Configuration::class);
@@ -86,4 +98,5 @@ class EnvironmentCommandTest extends UnitTestCase {
 
     $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
   }
+
 }

@@ -14,14 +14,23 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ProtectTest extends BrowserTestBase {
 
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
   protected static $modules = ['protect_before_launch'];
 
   /**
+   * Realm.
+   *
    * @var string
    */
   private $realm = 'Protected Site';
 
   /**
+   * Content.
+   *
    * @var string
    */
   private $content = 'Access Denied';
@@ -79,6 +88,7 @@ class ProtectTest extends BrowserTestBase {
    * Update module configuration.
    *
    * @param array $values
+   *   Config values.
    */
   private function updateConfig(array $values) {
     $config = $this->config('protect_before_launch.settings');

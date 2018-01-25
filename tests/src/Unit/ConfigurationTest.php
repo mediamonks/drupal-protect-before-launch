@@ -8,23 +8,27 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\protect_before_launch\Configuration;
 
 /**
- * Class ConfigurationTest
+ * Class ConfigurationTest.
  *
  * @group tests
  * @package Drupal\Tests\protect_before_launch\Unit
  */
 class ConfigurationTest extends UnitTestCase {
 
-  public function testValidateCredentialsEmpty()
-  {
+  /**
+   * Test validate credentials are empty.
+   */
+  public function testValidateCredentialsEmpty() {
     $configuration = $this->getConfiguration();
     $this->assertFalse($configuration->validateCredentials('foo', 'bar'));
     $this->assertFalse($configuration->validateCredentials('', ''));
-    $this->assertFalse($configuration->validateCredentials(null, null));
+    $this->assertFalse($configuration->validateCredentials(NULL, NULL));
   }
 
-  public function testValidateCredentialsValid()
-  {
+  /**
+   * Test validate valid credentials.
+   */
+  public function testValidateCredentialsValid() {
     $configuration = $this->getConfiguration([
       'username' => 'foo',
       'password' => password_hash('bar', Configuration::PASSWORD_HASH_METHOD)
@@ -32,11 +36,13 @@ class ConfigurationTest extends UnitTestCase {
     $this->assertTrue($configuration->validateCredentials('foo', 'bar'));
     $this->assertFalse($configuration->validateCredentials('foo', 'ber'));
     $this->assertFalse($configuration->validateCredentials('', ''));
-    $this->assertFalse($configuration->validateCredentials(null, null));
+    $this->assertFalse($configuration->validateCredentials(NULL, NULL));
   }
 
-  public function testSet()
-  {
+  /**
+   * Test setters.
+   */
+  public function testSet() {
     $editableConfig = $this->createMock(Config::class);
     $editableConfig->expects($this->at(0), $this->once())->method('set')->with('username', 'my_username')->will($this->returnSelf());
     $editableConfig->expects($this->at(2), $this->once())->method('set')->with('password', $this->anything())->will($this->returnSelf());
@@ -66,8 +72,10 @@ class ConfigurationTest extends UnitTestCase {
     $configuration->setAuthenticationType(Configuration::AUTH_DRUPAL);
   }
 
-  public function testSetProtectWithInvalidValue()
-  {
+  /**
+   * Test set protected with invalid value.
+   */
+  public function testSetProtectWithInvalidValue() {
     $this->setExpectedException(\InvalidArgumentException::class);
 
     $configuration = $this->createMock(ConfigFactoryInterface::class);
@@ -76,8 +84,10 @@ class ConfigurationTest extends UnitTestCase {
     $configuration->setProtect(9001);
   }
 
-  public function testSetAuthenticationTypeWithInvalidValue()
-  {
+  /**
+   * Test set authentication type with invalid value.
+   */
+  public function testSetAuthenticationTypeWithInvalidValue() {
     $this->setExpectedException(\InvalidArgumentException::class);
 
     $configuration = $this->createMock(ConfigFactoryInterface::class);
@@ -87,14 +97,18 @@ class ConfigurationTest extends UnitTestCase {
   }
 
   /**
+   * Get configuration.
+   *
    * @param array $config
+   *   Configuration.
    *
    * @return \Drupal\protect_before_launch\Configuration
+   *   Configuration.
    */
-  private function getConfiguration(array $config = [])
-  {
+  private function getConfiguration(array $config = []) {
     return new Configuration($this->getConfigFactoryStub([
       Configuration::CONFIG_KEY => $config
     ]));
   }
+
 }

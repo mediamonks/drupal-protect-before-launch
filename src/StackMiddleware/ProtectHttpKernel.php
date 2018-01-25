@@ -10,8 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ProtectHttpKernel implements HttpKernelInterface
-{
+/**
+ * A HttpKernel implementation that can protect by requiring http basic authentication.
+ */
+class ProtectHttpKernel implements HttpKernelInterface {
   /**
    * Original http kernel.
    *
@@ -58,7 +60,7 @@ class ProtectHttpKernel implements HttpKernelInterface
    *   Entity Type Manager.
    * @param \Drupal\Core\PageCache\ResponsePolicy\KillSwitch $killSwitch
    *   Kill switch service.
-   * @param \Drupal\Core\Password\PasswordInterface
+   * @param \Drupal\Core\Password\PasswordInterface $passwordChecker
    *   Password checker service.
    */
   public function __construct(HttpKernelInterface $httpKernel, Configuration $config, EntityTypeManagerInterface $entityTypeManager, KillSwitch $killSwitch, PasswordInterface $passwordChecker) {
@@ -92,6 +94,7 @@ class ProtectHttpKernel implements HttpKernelInterface
    * Create a response which informs a client to use basic authentication.
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   Symfony Response.
    */
   protected function createDenyResponse() {
     $response = new Response($this->config->getContent());
@@ -190,7 +193,8 @@ class ProtectHttpKernel implements HttpKernelInterface
   protected function authenticateCredentialsWithDrupal($username, $password) {
     try {
       return $this->passwordChecker->check($password, $this->getUserByName($username)->getPassword());
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return FALSE;
     }
   }
@@ -198,9 +202,12 @@ class ProtectHttpKernel implements HttpKernelInterface
   /**
    * Load a user by username.
    *
-   * @param $username
+   * @param string $username
+   *   Username.
    *
    * @return \Drupal\user\UserInterface
+   *   Drupal User.
+   *
    * @throws \Exception
    */
   protected function getUserByName($username) {
@@ -233,4 +240,5 @@ class ProtectHttpKernel implements HttpKernelInterface
 
     return FALSE;
   }
+
 }

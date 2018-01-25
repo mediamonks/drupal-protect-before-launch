@@ -10,7 +10,7 @@ use Drupal\Console\Core\Style\DrupalStyle;
 use Drupal\protect_before_launch\Configuration;
 
 /**
- * Class AbstractCommand
+ * Class AbstractCommand.
  *
  * @package Drupal\protect_before_launch\Command
  */
@@ -19,19 +19,24 @@ abstract class AbstractCommand extends Command {
   use CommandTrait;
 
   /**
-   * Drupal\protect_before_launch\Configuration definition.
+   * Configuration.
    *
    * @var \Drupal\protect_before_launch\Configuration
    */
   private $config;
 
   /**
+   * Drupal Console IO Style.
+   *
    * @var \Drupal\Console\Core\Style\DrupalStyle
    */
   private $io;
 
   /**
+   * Configuration.
+   *
    * @param \Drupal\protect_before_launch\Configuration $config
+   *   Configuration.
    */
   public function __construct(Configuration $config) {
     $this->config = $config;
@@ -46,14 +51,20 @@ abstract class AbstractCommand extends Command {
   }
 
   /**
+   * Return Configuration.
+   *
    * @return \Drupal\protect_before_launch\Configuration
+   *   Configuration.
    */
   public function getConfig() {
     return $this->config;
   }
 
   /**
+   * Return Drupal IO Style.
+   *
    * @return \Drupal\Console\Core\Style\DrupalStyle
+   *   Drupal IO Style
    */
   public function getIo() {
     return $this->io;

@@ -24,8 +24,19 @@ use Drupal\Console\Annotations\DrupalCommand;
  */
 class EnvironmentCommand extends AbstractCommand {
 
+  /**
+   * Environment key argument.
+   */
   const ARGUMENT_KEY = 'key';
+
+  /**
+   * Environment value argument.
+   */
   const ARGUMENT_VALUE = 'value';
+
+  /**
+   * Option to indicate there is not environment value.
+   */
   const OPTION_NO_VALUE = 'no-value';
 
   /**
@@ -36,7 +47,7 @@ class EnvironmentCommand extends AbstractCommand {
       ->setName('protect_before_launch:environment')
       ->addArgument(self::ARGUMENT_KEY, InputArgument::OPTIONAL)
       ->addArgument(self::ARGUMENT_VALUE, InputArgument::OPTIONAL)
-      ->addOption(self::OPTION_NO_VALUE, null, InputOption::VALUE_NONE)
+      ->addOption(self::OPTION_NO_VALUE, NULL, InputOption::VALUE_NONE)
       ->setDescription($this->trans('commands.protect_before_launch.environment.description'));
   }
 
@@ -58,7 +69,7 @@ class EnvironmentCommand extends AbstractCommand {
     if (!$noValue) {
       $value = $input->getArgument(self::ARGUMENT_VALUE);
       if (empty($value)) {
-        $value = $this->getIo()->ask($this->trans('commands.protect_before_launch.environment.messages.question_value'), false);
+        $value = $this->getIo()->ask($this->trans('commands.protect_before_launch.environment.messages.question_value'), FALSE);
       }
 
       if (!empty(trim($value))) {

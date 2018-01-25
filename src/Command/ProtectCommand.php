@@ -20,6 +20,9 @@ use Drupal\protect_before_launch\Configuration;
  */
 class ProtectCommand extends AbstractCommand {
 
+  /**
+   * Protect argument.
+   */
   const ARGUMENT_PROTECT = 'protect';
 
   /**
@@ -61,9 +64,13 @@ class ProtectCommand extends AbstractCommand {
   }
 
   /**
+   * Convert string to configuration constant.
+   *
    * @param string $status
+   *   User input.
    *
    * @return int
+   *   Configuration constant.
    */
   private function getStatusConfigCode($status) {
     switch ($status) {

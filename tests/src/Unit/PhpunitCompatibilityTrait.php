@@ -3,7 +3,7 @@
 namespace Drupal\Tests\protect_before_launch\Unit;
 
 /**
- * Force implement createMock(), taken from Drupal PhpunitCompatibilityTrait
+ * Force implement createMock(), taken from Drupal PhpunitCompatibilityTrait.
  */
 trait PhpunitCompatibilityTrait {
 
@@ -38,14 +38,14 @@ trait PhpunitCompatibilityTrait {
    * @param object $proxyTarget
    *   Sets the proxy target.
    *
-   * @see \PHPUnit_Framework_TestCase::getMock
-   * @see https://github.com/sebastianbergmann/phpunit/wiki/Release-Announcement-for-PHPUnit-5.4.0
-   *
    * @return \PHPUnit_Framework_MockObject_MockObject
+   *   PHP Unit Mock Object.
    *
    * @see https://www.drupal.org/node/2907725
+   * @see \PHPUnit_Framework_TestCase::getMock
+   * @see https://github.com/sebastianbergmann/phpunit/wiki/Release-Announcement-for-PHPUnit-5.4.0
    */
-  public function createMock($originalClassName, $methods = array(), array $arguments = array(), $mockClassName = '', $callOriginalConstructor = FALSE, $callOriginalClone = TRUE, $callAutoload = TRUE, $cloneArguments = FALSE, $callOriginalMethods = FALSE, $proxyTarget = NULL) {
+  public function createMock($originalClassName, $methods = [], array $arguments = [], $mockClassName = '', $callOriginalConstructor = FALSE, $callOriginalClone = TRUE, $callAutoload = TRUE, $cloneArguments = FALSE, $callOriginalMethods = FALSE, $proxyTarget = NULL) {
     $mock = $this->getMockBuilder($originalClassName)
       ->setMethods($methods)
       ->setConstructorArgs($arguments)
@@ -83,4 +83,5 @@ trait PhpunitCompatibilityTrait {
     }
     return $mock->getMock();
   }
+
 }

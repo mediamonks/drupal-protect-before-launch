@@ -8,13 +8,16 @@ use Drupal\Tests\protect_before_launch\Unit\UnitTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class PasswordCommandTest
+ * Class PasswordCommandTest.
  *
  * @group tests
  * @package Drupal\Tests\protect_before_launch\Unit\Command
  */
 class PasswordCommandTest extends UnitTestCase {
 
+  /**
+   * Test setting a password.
+   */
   public function testSetPassword() {
     $commandTester = new CommandTester($this->getCommand());
     $commandTester->execute(
@@ -26,6 +29,9 @@ class PasswordCommandTest extends UnitTestCase {
     $this->assertContains('commands.protect_before_launch.password.messages.success', $commandTester->getDisplay());
   }
 
+  /**
+   * Test setting a password interactively.
+   */
   public function testSetPasswordInteractive() {
     $this->verifySymfonyConsoleInputsSupport();
 
@@ -37,11 +43,17 @@ class PasswordCommandTest extends UnitTestCase {
     $this->assertContains('commands.protect_before_launch.password.messages.success', $commandTester->getDisplay());
   }
 
-  private function getCommand()
-  {
+  /**
+   * Get command to test.
+   *
+   * @return \Drupal\protect_before_launch\Command\PasswordCommand
+   *   Command
+   */
+  private function getCommand() {
     $configuration = $this->createMock(Configuration::class);
-    $configuration->expects($this->exactly(1))->method('setPassword')->willReturn(true);
+    $configuration->expects($this->exactly(1))->method('setPassword')->willReturn(TRUE);
 
     return new PasswordCommand($configuration);
   }
+
 }

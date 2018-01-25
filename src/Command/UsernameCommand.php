@@ -23,6 +23,9 @@ use Drupal\Console\Annotations\DrupalCommand;
  */
 class UsernameCommand extends AbstractCommand {
 
+  /**
+   * Username argument.
+   */
   const ARGUMENT_USERNAME = 'username';
 
   /**

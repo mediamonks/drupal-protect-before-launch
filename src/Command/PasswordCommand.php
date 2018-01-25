@@ -19,6 +19,9 @@ use Drupal\Console\Annotations\DrupalCommand;
  */
 class PasswordCommand extends AbstractCommand {
 
+  /**
+   * Password argument.
+   */
   const ARGUMENT_PASSWORD = 'password';
 
   /**

@@ -9,10 +9,15 @@ use Drupal\protect_before_launch\Form\DefaultForm;
 use Drupal\Tests\protect_before_launch\Unit\UnitTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class DefaultFormTest extends UnitTestCase
-{
-  public function testCreate()
-  {
+/**
+ * DefaultFormTest.
+ */
+class DefaultFormTest extends UnitTestCase {
+
+  /**
+   * Test create instance with static create.
+   */
+  public function testCreate() {
     $configuration = $this->createMock(Configuration::class);
 
     $container = $this->createMock(ContainerInterface::class);
@@ -21,16 +26,20 @@ class DefaultFormTest extends UnitTestCase
     $this->assertInstanceOf(DefaultForm::class, DefaultForm::create($container));
   }
 
-  public function testGetFormId()
-  {
+  /**
+   * Test get form id.
+   */
+  public function testGetFormId() {
     $configuration = $this->createMock(Configuration::class);
 
     $form = new DefaultForm($configuration);
     $this->assertEquals('protect_before_launch_form', $form->getFormId());
   }
 
-  public function testBuildForm()
-  {
+  /**
+   * Test build form.
+   */
+  public function testBuildForm() {
     $configuration = $this->createMock(Configuration::class);
     $formState = $this->createMock(FormStateInterface::class);
     $stringTranslation = $this->createMock(TranslationInterface::class);
@@ -53,8 +62,10 @@ class DefaultFormTest extends UnitTestCase
     $this->assertArrayHasKey('submit', $formData);
   }
 
-  public function testSubmitForm()
-  {
+  /**
+   * Test submit form.
+   */
+  public function testSubmitForm() {
     $configuration = $this->createMock(Configuration::class);
     $configuration->expects($this->once())->method('setProtect')->with('protect')->willReturnSelf();
     $configuration->expects($this->once())->method('setUsername')->with('username')->willReturnSelf();
@@ -76,15 +87,18 @@ class DefaultFormTest extends UnitTestCase
     $form->submitForm($formData, $formState);
   }
 
-  public function testGetEditableConfigNames()
-  {
+  /**
+   * Test get editable config names.
+   */
+  public function testGetEditableConfigNames() {
     $class = new \ReflectionClass(DefaultForm::class);
     $method = $class->getMethod('getEditableConfigNames');
-    $method->setAccessible(true);
+    $method->setAccessible(TRUE);
 
     $configuration = $this->createMock(Configuration::class);
 
     $form = new DefaultForm($configuration);
     $this->assertEquals([Configuration::CONFIG_KEY], $method->invokeArgs($form, []));
   }
+
 }

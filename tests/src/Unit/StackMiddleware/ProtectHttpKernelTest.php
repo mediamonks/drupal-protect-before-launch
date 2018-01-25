@@ -15,34 +15,40 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * Class ProtectEventSubscriberTest
+ * Class ProtectEventSubscriberTest.
  *
  * @group tests
  * @package Drupal\Tests\protect_before_launch\Unit\StackMiddleware
  */
 class ProtectHttpKernelTest extends UnitTestCase {
 
-  public function testAccessGrantedWhenDisabled()
-  {
-    $response = $this->dispatchRequestWithConfig(new Request(), array_merge($this->getProtectedConfig(), [
+  /**
+   * Test access granted when disabled.
+   */
+  public function testAccessGrantedWhenDisabled() {
+    $response = $this->handleRequestWithConfig(new Request(), array_merge($this->getProtectedConfig(), [
       'protect' => Configuration::PROTECT_DISABLED
     ]));
     $this->assertEmpty($response);
   }
 
-  public function testAccessDeniedWhenProtectedWithoutCredentials()
-  {
-    $response = $this->dispatchRequestWithConfig(new Request(), $this->getProtectedConfig());
+  /**
+   * Test access denied when protected when requested without credentials.
+   */
+  public function testAccessDeniedWhenProtectedWithoutCredentials() {
+    $response = $this->handleRequestWithConfig(new Request(), $this->getProtectedConfig());
     $this->assertProtected($response);
   }
 
-  public function testAccessGrantedWhenProtectedWithValidCredentials()
-  {
+  /**
+   * Test access granted when protected with valid credentials.
+   */
+  public function testAccessGrantedWhenProtectedWithValidCredentials() {
     $request = new Request();
     $request->headers->set('PHP_AUTH_USER', 'foo');
     $request->headers->set('PHP_AUTH_PW', 'bar');
 
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'authentication_type' => Configuration::AUTH_SIMPLE,
       'username' => 'foo',
       'password' => password_hash('bar', PASSWORD_DEFAULT)
@@ -51,13 +57,15 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $this->assertEmpty($response);
   }
 
-  public function testAccessDeniedWhenProtectedWithWrongCredentials()
-  {
+  /**
+   * Test access denied when protected with invalid credentials.
+   */
+  public function testAccessDeniedWhenProtectedWithInvalidCredentials() {
     $request = new Request();
     $request->headers->set('PHP_AUTH_USER', 'foo');
     $request->headers->set('PHP_AUTH_PW', 'ber');
 
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'authentication_type' => Configuration::AUTH_SIMPLE,
       'username' => 'foo',
       'password' => password_hash('bar', PASSWORD_DEFAULT)
@@ -66,77 +74,91 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $this->assertProtected($response);
   }
 
-  public function testAccessGrantedWhenProtectedWithoutCredentialsWithMatchingExcludePath()
-  {
-    $response = $this->dispatchRequestWithConfig(Request::create('/foo'), array_merge($this->getProtectedConfig(), [
+  /**
+   * Test access granted when protected without credentials and a matching exclude path.
+   */
+  public function testAccessGrantedWhenProtectedWithoutCredentialsWithMatchingExcludePath() {
+    $response = $this->handleRequestWithConfig(Request::create('/foo'), array_merge($this->getProtectedConfig(), [
       'exclude_paths' => '^/foo'
     ]));
     $this->assertEmpty($response);
   }
 
-  public function testAccessDeniedWhenProtectedWithoutCredentialsWithoutMatchingExcludePath()
-  {
-    $response = $this->dispatchRequestWithConfig(Request::create('/foo'), array_merge($this->getProtectedConfig(), [
+  /**
+   * Test access denied when protected without credentials without matching exclude path.
+   */
+  public function testAccessDeniedWhenProtectedWithoutCredentialsWithoutMatchingExcludePath() {
+    $response = $this->handleRequestWithConfig(Request::create('/foo'), array_merge($this->getProtectedConfig(), [
       'exclude_paths' => '^/bar'
     ]));
     $this->assertProtected($response);
   }
 
-  public function testAccessDeniedWhenProtectedFromDrupal()
-  {
+  /**
+   * Test access denied when protected with Drupal as identity provider.
+   */
+  public function testAccessDeniedWhenProtectedFromDrupal() {
     $request = new Request();
     $request->headers->set('PHP_AUTH_USER', 'foo');
     $request->headers->set('PHP_AUTH_PW', 'bar');
 
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'authentication_type' => Configuration::AUTH_DRUPAL,
     ]));
 
     $this->assertEmpty($response);
   }
 
-  public function testAccessDeniedWhenProtectedFromDrupalInvalidCredentials()
-  {
+  /**
+   * Test access denied when protected with Drupal as identity provider with invalid credentials.
+   */
+  public function testAccessDeniedWhenProtectedFromDrupalInvalidCredentials() {
     $request = new Request();
     $request->headers->set('PHP_AUTH_USER', 'foo');
     $request->headers->set('PHP_AUTH_PW', 'ber');
 
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'authentication_type' => Configuration::AUTH_DRUPAL,
     ]));
 
     $this->assertProtected($response);
   }
 
-  public function testAccessDeniedWhenProtectedFromDrupalUnknownUser()
-  {
+  /**
+   * Test access denied when protected with Drupal as identity provider with an unknown user.
+   */
+  public function testAccessDeniedWhenProtectedFromDrupalUnknownUser() {
     $request = new Request();
     $request->headers->set('PHP_AUTH_USER', 'unknown');
     $request->headers->set('PHP_AUTH_PW', 'bar');
 
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'authentication_type' => Configuration::AUTH_DRUPAL,
     ]));
 
     $this->assertProtected($response);
   }
 
-  public function testAccessGrantedWhenNotProtectedByEnvironment()
-  {
+  /**
+   * Test access granted when not protected by environment key.
+   */
+  public function testAccessGrantedWhenNotProtectedByEnvironment() {
     $request = new Request();
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'protect' => Configuration::PROTECT_ENV_ENABLED
     ]));
 
     $this->assertEmpty($response);
   }
 
-  public function testAccessDeniedWhenProtectedByEnvironment()
-  {
+  /**
+   * Test access denied when protected by environment key.
+   */
+  public function testAccessDeniedWhenProtectedByEnvironment() {
     putenv('PBF_ENABLED=1');
 
     $request = new Request();
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_ENABLED'
     ]));
@@ -144,15 +166,17 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $this->assertProtected($response);
   }
 
-  public function testAccessGrantedWhenProtectedByEnvironmentWithValidCredentials()
-  {
+  /**
+   * Test access granted when protected by environment key with valid credentials.
+   */
+  public function testAccessGrantedWhenProtectedByEnvironmentWithValidCredentials() {
     putenv('PBF_ENABLED=1');
 
     $request = new Request();
     $request->headers->set('PHP_AUTH_USER', 'foo');
     $request->headers->set('PHP_AUTH_PW', 'bar');
 
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_ENABLED'
     ]));
@@ -160,15 +184,17 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $this->assertEmpty($response);
   }
 
-  public function testAccessDeniedWhenProtectedByEnvironmentWithInvalidCredentials()
-  {
+  /**
+   * Test access denied when protected by environment key with invalid credentials.
+   */
+  public function testAccessDeniedWhenProtectedByEnvironmentWithInvalidCredentials() {
     putenv('PBF_ENABLED=1');
 
     $request = new Request();
     $request->headers->set('PHP_AUTH_USER', 'foo');
     $request->headers->set('PHP_AUTH_PW', 'ber');
 
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_ENABLED'
     ]));
@@ -176,12 +202,14 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $this->assertProtected($response);
   }
 
-  public function testAccessDeniedWhenProtectedByEnvironmentWithValue()
-  {
+  /**
+   * Test access denied when protected by environment key with value.
+   */
+  public function testAccessDeniedWhenProtectedByEnvironmentWithValue() {
     putenv('PBF_PROTECT=ENABLED');
 
     $request = new Request();
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_PROTECT',
       'environment_value' => 'ENABLED'
@@ -190,12 +218,14 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $this->assertProtected($response);
   }
 
-  public function testAccessGrantedWhenProtectedByEnvironmentWithValue()
-  {
+  /**
+   * Test access granted when protected by environment key with value.
+   */
+  public function testAccessGrantedWhenProtectedByEnvironmentWithValue() {
     putenv('PBF_PROTECT=DISABLED');
 
     $request = new Request();
-    $response = $this->dispatchRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
+    $response = $this->handleRequestWithConfig($request, array_merge($this->getProtectedConfig(), [
       'protect' => Configuration::PROTECT_ENV_ENABLED,
       'environment_key' => 'PBF_PROTECT',
       'environment_value' => 'ENABLED'
@@ -205,10 +235,12 @@ class ProtectHttpKernelTest extends UnitTestCase {
   }
 
   /**
+   * Assert unauthorized response.
+   *
    * @param \Symfony\Component\HttpFoundation\Response $response
+   *   Symfony Response.
    */
-  private function assertProtected(Response $response)
-  {
+  private function assertProtected(Response $response) {
     $this->assertEquals($response->getStatusCode(), Response::HTTP_UNAUTHORIZED);
     $this->assertEquals($response->getContent(), 'Access Denied');
     $this->assertContains('Secured Area', $response->headers->get('www-authenticate'));
@@ -216,10 +248,12 @@ class ProtectHttpKernelTest extends UnitTestCase {
   }
 
   /**
+   * Get default config which enables protection.
+   *
    * @return array
+   *   Configuration
    */
-  private function getProtectedConfig()
-  {
+  private function getProtectedConfig() {
     return [
       'protect' => Configuration::PROTECT_ENABLED,
       'content' => 'Access Denied',
@@ -228,12 +262,17 @@ class ProtectHttpKernelTest extends UnitTestCase {
   }
 
   /**
+   * Handle request with specified config.
+   *
    * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Request.
    * @param array $config
+   *   Configuration.
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   Response.
    */
-  private function dispatchRequestWithConfig(Request $request, array $config) {
+  private function handleRequestWithConfig(Request $request, array $config) {
     $configuration = new Configuration($this->getConfigFactoryStub([
       'protect_before_launch.settings' => $config,
     ]));
@@ -245,10 +284,11 @@ class ProtectHttpKernelTest extends UnitTestCase {
     $storage->method('loadByProperties')->with($this->logicalOr(
       $this->equalTo(['name' => 'foo']),
       $this->equalTo(['name' => 'unknown'])
-    ))->will($this->returnCallback(function ($value) use($user) {
-      switch($value['name']) {
+    ))->will($this->returnCallback(function ($value) use ($user) {
+      switch ($value['name']) {
         case 'foo':
           return [$user];
+
         default:
           return [];
       }
@@ -273,4 +313,5 @@ class ProtectHttpKernelTest extends UnitTestCase {
 
     return $response;
   }
+
 }
