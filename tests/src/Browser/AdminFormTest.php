@@ -6,7 +6,7 @@ use Drupal\protect_before_launch\Configuration;
 use Drupal\Tests\BrowserTestBase;
 
 /**
- * Class AuthenticateTest.
+ * Class AdminFormTest.
  *
  * @group tests
  * @package Drupal\Tests\protect_before_launch\Browser

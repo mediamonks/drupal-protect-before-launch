@@ -16,6 +16,11 @@ You need:
 - **PHP >= 5.6.0**
 - **Drupal >= 8.2**
 
+## Installation
+
+Install with **composer require drupal/protect_before_launch** and enable from your
+admin panel or use drush: **drush en protect_before_launch -y**.
+
 ## Security
 
 If you discover any security related issues, please email devmonk@mediamonks.com instead of using the issue tracker.

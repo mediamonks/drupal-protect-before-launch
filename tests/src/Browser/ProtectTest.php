@@ -7,7 +7,7 @@ use Drupal\Tests\BrowserTestBase;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class AuthenticateTest.
+ * Class ProtectTest.
  *
  * @group tests
  * @package Drupal\Tests\protect_before_launch\Browser
