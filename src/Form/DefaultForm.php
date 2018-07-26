@@ -2,7 +2,7 @@
 
 namespace Drupal\protect_before_launch\Form;
 
-use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\protect_before_launch\Configuration;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\protect_before_launch\Form
  */
-class DefaultForm extends ConfigFormBase {
+class DefaultForm extends FormBase {
 
   /**
    * Form ID.
