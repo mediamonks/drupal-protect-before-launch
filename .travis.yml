@@ -97,7 +97,7 @@ script:
   - phpcs --report=full --standard=Drupal --warning-severity=0 $TRAVIS_BUILD_DIR/drupal/modules/$MODULE_NAME --ignore=bin,*.css,gulpfile.js,libraries,modules/contrib,vendor
 
   # Static Analysis
-  - if [ "$INSPECT" == "1" ]; then composer require "phpstan/phpstan" --dev; fi;
+  - if [ "$INSPECT" == "1" ]; then composer require "phpstan/phpstan" --dev fi;
   - if [ "$INSPECT" == "1" ]; vendor/bin/phpstan analyse modules/$MODULE_NAME/src fi;
 
   # PHPUnit
