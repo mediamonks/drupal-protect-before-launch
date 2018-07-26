@@ -122,7 +122,7 @@ after_success:
       mv $TRAVIS_BUILD_DIR/drupal/coverage.clover coverage.clover;
       wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
       rm coverage.clover;
-  fi
+    fi
   - if [ "$UPSTREAM" == "1" ]; then
       eval "$(ssh-agent -s)";
       echo $DRUPAL_ORG_KEY | base64 --decode > drupalorg_key.pem;
@@ -137,4 +137,4 @@ after_success:
       git remote add drupalorg git@git.drupal.org:project/$MODULE_NAME.git;
       git push drupalorg $TRAVIS_BRANCH;
       eval "$(ssh-agent -k)";
-  fi
+    fi
