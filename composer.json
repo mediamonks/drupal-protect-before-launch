@@ -17,12 +17,23 @@
       "homepage": "https://github.com/slootjes"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "Drupal\\protect_before_launch\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Drupal\\Tests\\protect_before_launch\\": "tests/src"
+    }
+  },
   "require": {
     "php": "^5.6|^7.0"
   },
   "require-dev": {
     "drupal/console": "^1.0",
-    "mockery/mockery": "^0.9.9"
+    "mockery/mockery": "^0.9.9",
+    "phpstan/phpstan": "^0.10.2"
   },
   "suggest": {
     "drupal/console": "Allow status, username and password to be set by command line interface"

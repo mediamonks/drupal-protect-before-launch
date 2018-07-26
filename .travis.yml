@@ -18,6 +18,8 @@ env:
     - DRUPAL_VERSION="8.3.x"
     - DRUPAL_VERSION="8.4.x"
     - DRUPAL_VERSION="8.5.x"
+    - DRUPAL_VERSION="8.6.x"
+    - DRUPAL_VERSION="8.7.x"
 
 cache:
   bundler: true
@@ -91,8 +93,11 @@ before_script:
   - drush runserver 127.0.0.1:8080 &
 
 script:
-  # CodeSniffer
+  # Code Style
   - phpcs --report=full --standard=Drupal --warning-severity=0 $TRAVIS_BUILD_DIR/drupal/modules/$MODULE_NAME --ignore=bin,*.css,gulpfile.js,libraries,modules/contrib,vendor
+
+  # Static Analysis
+  - vendor/bin/phpstan analyse modules/$MODULE_NAME/src
 
   # PHPUnit
   - cd $TRAVIS_BUILD_DIR/drupal
