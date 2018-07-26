@@ -35,8 +35,8 @@ mysql:
 
 before_install:
   # Decide if this build is used to push upstream changes to Drupal.org
-  - if [ "$TRAVIS_PHP_VERSION" == "7.0" ] && [ "$DRUPAL_VERSION" == "8.4.x" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then export UPSTREAM="1"; else export UPSTREAM="0"; fi;
-  - if [ "$TRAVIS_PHP_VERSION" == "7.0" ] && [ "$DRUPAL_VERSION" == "8.4.x" ] ; then export INSPECT="1"; else export INSPECT="0"; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.1" ] && [ "$DRUPAL_VERSION" == "8.5.x" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then export UPSTREAM="1"; else export UPSTREAM="0"; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.1" ] && [ "$DRUPAL_VERSION" == "8.5.x" ] ; then export INSPECT="1"; else export INSPECT="0"; fi;
 
   # Disable xdebug when we do not generate coverage files
   - if [ "$INSPECT" == "0" ]; then phpenv config-rm xdebug.ini; fi;
@@ -97,7 +97,8 @@ script:
   - phpcs --report=full --standard=Drupal --warning-severity=0 $TRAVIS_BUILD_DIR/drupal/modules/$MODULE_NAME --ignore=bin,*.css,gulpfile.js,libraries,modules/contrib,vendor
 
   # Static Analysis
-  - vendor/bin/phpstan analyse modules/$MODULE_NAME/src
+  - if [ "$INSPECT" == "1" ]; then composer remove "phpstan/phpstan" --dev; fi;
+  - if [ "$INSPECT" == "1" ]; vendor/bin/phpstan analyse modules/$MODULE_NAME/src fi;
 
   # PHPUnit
   - cd $TRAVIS_BUILD_DIR/drupal
