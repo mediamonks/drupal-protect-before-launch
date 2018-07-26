@@ -6,6 +6,7 @@ php:
   - 5.6
   - 7.0
   - 7.1
+  - 7.2
 
 env:
   global:
@@ -20,6 +21,8 @@ env:
     - DRUPAL_VERSION="8.5.x"
     - DRUPAL_VERSION="8.6.x"
     - DRUPAL_VERSION="8.7.x"
+  allow_failures:
+    - php: 7.2
 
 cache:
   bundler: true
@@ -112,20 +115,24 @@ script:
   #- vendor/bin/behat --config tests/behat/behat.yml
 
 after_success:
-  - if [ "$INSPECT" == "1" ]; then cd $TRAVIS_BUILD_DIR/module; fi;
-  - if [ "$INSPECT" == "1" ]; then mv $TRAVIS_BUILD_DIR/drupal/coverage.clover coverage.clover; fi;
-  - if [ "$INSPECT" == "1" ]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi;
-  - if [ "$INSPECT" == "1" ]; then rm coverage.clover; fi;
-  - if [ "$UPSTREAM" == "1" ]; then eval "$(ssh-agent -s)"; fi;
-  - if [ "$UPSTREAM" == "1" ]; then echo $DRUPAL_ORG_KEY | base64 --decode > drupalorg_key.pem; fi;
-  - if [ "$UPSTREAM" == "1" ]; then chmod 600 drupalorg_key.pem; fi;
-  - if [ "$UPSTREAM" == "1" ]; then ssh-add drupalorg_key.pem; fi;
-  - if [ "$UPSTREAM" == "1" ]; then git fetch --unshallow; fi;
-  - if [ "$UPSTREAM" == "1" ]; then git config --global user.name "devmonk"; fi;
-  - if [ "$UPSTREAM" == "1" ]; then git config --global user.email devmonk@mediamonks.com; fi;
-  - if [ "$UPSTREAM" == "1" ]; then git config --global push.default matching; fi;
-  - if [ "$UPSTREAM" == "1" ]; then git config --global push.followTags true; fi;
-  - if [ "$UPSTREAM" == "1" ]; then echo -e "Host git.drupal.org\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config; fi;
-  - if [ "$UPSTREAM" == "1" ]; then git remote add drupalorg git@git.drupal.org:project/$MODULE_NAME.git; fi;
-  - if [ "$UPSTREAM" == "1" ]; then git push drupalorg $TRAVIS_BRANCH; fi;
-  - if [ "$UPSTREAM" == "1" ]; then eval "$(ssh-agent -k)"; fi;
+  - if [ "$INSPECT" == "1" ]; then
+      cd $TRAVIS_BUILD_DIR/module;
+      mv $TRAVIS_BUILD_DIR/drupal/coverage.clover coverage.clover;
+      wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
+      rm coverage.clover;
+  fi
+  - if [ "$UPSTREAM" == "1" ]; then
+      eval "$(ssh-agent -s)";
+      echo $DRUPAL_ORG_KEY | base64 --decode > drupalorg_key.pem;
+      chmod 600 drupalorg_key.pem;
+      ssh-add drupalorg_key.pem;
+      git fetch --unshallow;
+      git config --global user.name "devmonk";
+      git config --global user.email devmonk@mediamonks.com;
+      git config --global push.default matching;
+      git config --global push.followTags true;
+      echo -e "Host git.drupal.org\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config;
+      git remote add drupalorg git@git.drupal.org:project/$MODULE_NAME.git;
+      git push drupalorg $TRAVIS_BRANCH;
+      eval "$(ssh-agent -k)";
+  fi
