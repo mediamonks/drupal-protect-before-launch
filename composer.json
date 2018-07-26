@@ -32,8 +32,7 @@
   },
   "require-dev": {
     "drupal/console": "^1.0",
-    "mockery/mockery": "^0.9.9",
-    "phpstan/phpstan": "^0.10.2"
+    "mockery/mockery": "^1.0"
   },
   "suggest": {
     "drupal/console": "Allow status, username and password to be set by command line interface"
