@@ -25,6 +25,13 @@ env:
 matrix:
   allow_failures:
     - php: 7.2
+  exclude:
+    - php: 7.2
+      env: DRUPAL_VERSION="8.2.x"
+    - php: 7.2
+      env: DRUPAL_VERSION="8.3.x"
+    - php: 7.2
+      env: DRUPAL_VERSION="8.4.x"
 
 cache:
   bundler: true
@@ -92,6 +99,9 @@ before_script:
   # Export simpletest environment variables
   - export SIMPLETEST_BASE_URL=http://localhost:8080
   - export SIMPLETEST_DB=mysql://root:@127.0.0.1/drupal
+
+  # Do not break on deprecation warnings
+  - export SYMFONY_DEPRECATIONS_HELPER=disabled
 
   # Start a web server.
   - cd $TRAVIS_BUILD_DIR/drupal
