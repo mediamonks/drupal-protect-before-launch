@@ -1,0 +1,11 @@
+includes:
+  - vendor/phpstan/phpstan/conf/config.level0.neon
+
+parameters:
+  level: 0
+  autoload_directories:
+    - %currentWorkingDirectory%/drupal/core/modules
+  fileExtensions:
+    - php
+    - module
+    - inc

@@ -106,42 +106,37 @@ class ProtectHttpKernel implements HttpKernelInterface {
   }
 
   /**
-   * Verifiy if request should be protected.
+   * Verify if request should be protected.
    *
    * @return bool
    *   Protect from accessing bool.
    */
   protected function shouldProtect() {
-    $status = $this->config->getProtect();
-    if (Configuration::PROTECT_ENABLED == $status) {
-      return TRUE;
+    switch ($this->config->getProtect()) {
+      case Configuration::PROTECT_ENABLED:
+        return TRUE;
+       case Configuration::PROTECT_ENV_ENABLED:
+        return $this->getProtectFromEnvironment();
     }
-    elseif (Configuration::PROTECT_ENV_ENABLED == $status) {
-      return $this->getProtectFromEnvironment();
-    }
+    return FALSE;
   }
 
   /**
    * Check if to auto enable based on env variable.
    *
-   * @return int
+   * @return bool
    *   Protection status
    */
   protected function getProtectFromEnvironment() {
     if (FALSE !== getenv($this->config->getEnvironmentKey())) {
       if (!empty($this->config->getEnvironmentValue())) {
-        if (getenv($this->config->getEnvironmentKey()) == $this->config->getEnvironmentValue()) {
-          return Configuration::PROTECT_ENABLED;
-        }
-        else {
-          return Configuration::PROTECT_DISABLED;
-        }
+        return getenv($this->config->getEnvironmentKey()) === $this->config->getEnvironmentValue();
       }
       else {
-        return Configuration::PROTECT_ENABLED;
+        return TRUE;
       }
     }
-    return Configuration::PROTECT_DISABLED;
+    return FALSE;
   }
 
   /**
