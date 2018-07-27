@@ -221,7 +221,7 @@ class ProtectHttpKernel implements HttpKernelInterface {
     }
 
     if (!$users[0] instanceof UserInterface) {
-        throw new \Exception('User not found');
+      throw new \Exception('User not found');
     }
 
     return $users[0];
