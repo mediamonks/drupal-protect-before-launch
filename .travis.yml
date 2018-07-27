@@ -47,9 +47,10 @@ mysql:
   encoding: utf8
 
 before_install:
-  # Decide if this build is used to push upstream changes to Drupal.org
-  - if [ "$TRAVIS_PHP_VERSION" == "7.1" ] && [ "$DRUPAL_VERSION" == "8.5.x" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then export UPSTREAM="1"; else export UPSTREAM="0"; fi;
+  # Decide if we are going to do a full inspection on this build
   - if [ "$TRAVIS_PHP_VERSION" == "7.1" ] && [ "$DRUPAL_VERSION" == "8.5.x" ] ; then export INSPECT="1"; else export INSPECT="0"; fi;
+  # Decide if this build is used to push upstream changes to Drupal.org
+  - if [ "$INSPECT" == "1" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then export UPSTREAM="1"; else export UPSTREAM="0"; fi;
 
   # Disable xdebug when we do not generate coverage files
   - if [ "$INSPECT" == "0" ]; then phpenv config-rm xdebug.ini; fi;

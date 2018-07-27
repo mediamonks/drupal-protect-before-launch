@@ -115,8 +115,10 @@ class ProtectHttpKernel implements HttpKernelInterface {
     switch ($this->config->getProtect()) {
       case Configuration::PROTECT_ENABLED:
         return TRUE;
-       case Configuration::PROTECT_ENV_ENABLED:
+
+      case Configuration::PROTECT_ENV_ENABLED:
         return $this->getProtectFromEnvironment();
+
     }
     return FALSE;
   }
