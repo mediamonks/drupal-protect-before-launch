@@ -116,7 +116,7 @@ script:
   # Static Analysis
   - if [ "$INSPECT" == "1" ]; then
       composer require "phpstan/phpstan" --dev;
-      vendor/bin/phpstan analyse modules/$MODULE_NAME/src -c modules/phpstan.neon;
+      vendor/bin/phpstan analyse modules/$MODULE_NAME/src -c modules/$MODULE_NAME/phpstan.neon;
     fi
 
   # PHPUnit
