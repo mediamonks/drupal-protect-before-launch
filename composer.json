@@ -7,14 +7,14 @@
   "homepage": "https://www.drupal.org/project/protect_before_launch",
   "authors": [
     {
-      "name": "Jason Lentink (monkjason)",
-      "homepage": "https://www.drupal.org/u/monkjason",
-      "role": "Maintainer"
+      "name": "Jason Lentink",
+      "homepage": "https://www.drupal.org/u/monkjason"
     },
     {
       "name": "Robert Slootjes",
       "email": "robert@mediamonks.com",
-      "homepage": "https://github.com/slootjes"
+      "homepage": "https://github.com/slootjes",
+      "role": "Maintainer"
     }
   ],
   "autoload": {

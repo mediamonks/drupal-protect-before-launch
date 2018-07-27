@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\PageCache\ResponsePolicy\KillSwitch;
 use Drupal\Core\Password\PasswordInterface;
 use Drupal\protect_before_launch\Configuration;
+use Drupal\user\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -211,14 +212,19 @@ class ProtectHttpKernel implements HttpKernelInterface {
    * @throws \Exception
    */
   protected function getUserByName($username) {
-    $users = $this->entityTypeManager->getStorage('user')
+    $users = $this->entityTypeManager
+      ->getStorage('user')
       ->loadByProperties(['name' => $username]);
 
     if (count($users) < 1) {
       throw new \Exception('User not found');
     }
 
-    return array_shift($users);
+    if (!$users[0] instanceof UserInterface) {
+        throw new \Exception('User not found');
+    }
+
+    return $users[0];
   }
 
   /**

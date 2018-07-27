@@ -118,8 +118,9 @@ script:
     fi
 
   # PHPUnit
+  - if [ "$INSPECT" == "1" ]; then export PHPUNIT_FLAGS="--coverage-clover=coverage.clover"; else export PHPUNIT_FLAGS=""; fi;
   - cd $TRAVIS_BUILD_DIR/drupal
-  - if [ "$INSPECT" == "1" ]; then vendor/bin/phpunit -c core/phpunit.xml.dist modules/$MODULE_NAME --coverage-clover=coverage.clover; else vendor/bin/phpunit -c core/phpunit.xml.dist modules/$MODULE_NAME; fi;
+  - vendor/bin/phpunit -c core/phpunit.xml.dist modules/$MODULE_NAME $PHPUNIT_FLAGS;
 
   # Behat Tests - RUN THESE LAST OTHERWISE PHPUNIT WILL FAIL BECAUSE OF DEPENDENCY CONFLICTS
   #- cd $TRAVIS_BUILD_DIR/drupal/modules/$MODULE_NAME
