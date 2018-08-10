@@ -10,8 +10,8 @@ env:
   global:
     - MODULE_NAME="protect_before_launch"
     - DRUPAL_REPO="git://drupalcode.org/project/drupal.git"
-    - PHPCS_VERSION="3.3.*"
-    - CODER_VERSION="8.2.*"
+    - PHPCS_VERSION="^2.7"
+    - CODER_VERSION="^8.2"
   matrix:
     - DRUPAL_VERSION="8.2.x"
     - DRUPAL_VERSION="8.3.x"
@@ -122,11 +122,6 @@ script:
   - if [ "$INSPECT" == "1" ]; then export PHPUNIT_FLAGS="--coverage-clover=coverage.clover"; else export PHPUNIT_FLAGS=""; fi;
   - cd $TRAVIS_BUILD_DIR/drupal
   - vendor/bin/phpunit -c core/phpunit.xml.dist modules/$MODULE_NAME $PHPUNIT_FLAGS;
-
-  # Behat Tests - RUN THESE LAST OTHERWISE PHPUNIT WILL FAIL BECAUSE OF DEPENDENCY CONFLICTS
-  #- cd $TRAVIS_BUILD_DIR/drupal/modules/$MODULE_NAME
-  #- composer install
-  #- vendor/bin/behat --config tests/behat/behat.yml
 
 after_success:
   - if [ "$INSPECT" == "1" ]; then
