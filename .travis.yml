@@ -46,12 +46,12 @@ mysql:
 
 before_install:
   # Decide if we are going to do a full inspection on this build
-  - if [ "$TRAVIS_PHP_VERSION" == "7.1" ] && [ "$DRUPAL_VERSION" == "8.5.x" ] ; then export INSPECT="1"; else export INSPECT="0"; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.1" ] && [ "$DRUPAL_VERSION" == "8.5.x" ] ; then export INSPECT="true"; else export INSPECT="false"; fi;
   # Decide if this build is used to push upstream changes to Drupal.org
-  - if [ "$INSPECT" == "1" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then export UPSTREAM="1"; else export UPSTREAM="0"; fi;
+  - if [ "$INSPECT" == "true" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then export UPSTREAM="true"; else export UPSTREAM="false"; fi;
 
   # Disable xdebug when we do not generate coverage files
-  - if [ "$INSPECT" == "0" ]; then phpenv config-rm xdebug.ini; fi;
+  - if [ "$INSPECT" == "false" ]; then phpenv config-rm xdebug.ini; fi;
 
   # Composer
   - sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
@@ -113,24 +113,24 @@ script:
   - phpcs --report=full --standard=Drupal --warning-severity=0 $TRAVIS_BUILD_DIR/drupal/modules/$MODULE_NAME --ignore=bin,*.css,gulpfile.js,libraries,modules/contrib,vendor
 
   # Static Analysis
-  - if [ "$INSPECT" == "1" ]; then
+  - if [ "$INSPECT" == "true" ]; then
       composer require "phpstan/phpstan" --dev;
       vendor/bin/phpstan analyse modules/$MODULE_NAME/src -c modules/$MODULE_NAME/phpstan.neon;
     fi
 
   # PHPUnit
-  - if [ "$INSPECT" == "1" ]; then export PHPUNIT_FLAGS="--coverage-clover=coverage.clover"; else export PHPUNIT_FLAGS=""; fi;
+  - if [ "$INSPECT" == "true" ]; then export PHPUNIT_FLAGS="--coverage-clover=coverage.clover"; else export PHPUNIT_FLAGS=""; fi;
   - cd $TRAVIS_BUILD_DIR/drupal
   - vendor/bin/phpunit -c core/phpunit.xml.dist modules/$MODULE_NAME $PHPUNIT_FLAGS;
 
 after_success:
-  - if [ "$INSPECT" == "1" ]; then
+  - if [ "$INSPECT" == "true" ]; then
       cd $TRAVIS_BUILD_DIR/module;
       mv $TRAVIS_BUILD_DIR/drupal/coverage.clover coverage.clover;
       wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
       rm coverage.clover;
     fi
-  - if [ "$UPSTREAM" == "1" ]; then
+  - if [ "$UPSTREAM" == "true" ]; then
       eval "$(ssh-agent -s)";
       echo $DRUPAL_ORG_KEY | base64 --decode > drupalorg_key.pem;
       chmod 600 drupalorg_key.pem;
