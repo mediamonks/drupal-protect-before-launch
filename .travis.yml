@@ -6,6 +6,9 @@ php:
   - 7.2
   - 7.3
 
+services:
+  - mysql
+
 env:
   global:
     - MODULE_NAME="protect_before_launch"
@@ -45,11 +48,6 @@ cache:
   directories:
     - "$HOME/.composer/cache"
     - "$HOME/.drush/cache"
-
-mysql:
-  database: drupal
-  username: root
-  encoding: utf8
 
 before_install:
   # Decide if we are going to do a full inspection on this build
