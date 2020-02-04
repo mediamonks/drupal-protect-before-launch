@@ -1,10 +1,10 @@
 language: php
 
 php:
-  - 5.6
   - 7.0
   - 7.1
   - 7.2
+  - 7.3
 
 env:
   global:
@@ -19,11 +19,10 @@ env:
     - DRUPAL_VERSION="8.5.x"
     - DRUPAL_VERSION="8.6.x"
     - DRUPAL_VERSION="8.7.x"
+    - DRUPAL_VERSION="8.8.x"
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - env: DRUPAL_VERSION="8.7.x"
   exclude:
     - php: 7.2
       env: DRUPAL_VERSION="8.2.x"
@@ -31,6 +30,14 @@ matrix:
       env: DRUPAL_VERSION="8.3.x"
     - php: 7.2
       env: DRUPAL_VERSION="8.4.x"
+    - php: 7.3
+      env: DRUPAL_VERSION="8.2.x"
+    - php: 7.3
+      env: DRUPAL_VERSION="8.3.x"
+    - php: 7.3
+      env: DRUPAL_VERSION="8.4.x"
+    - php: 7.3
+      env: DRUPAL_VERSION="8.5.x"
 
 cache:
   bundler: true
@@ -46,7 +53,7 @@ mysql:
 
 before_install:
   # Decide if we are going to do a full inspection on this build
-  - if [ "$TRAVIS_PHP_VERSION" == "7.1" ] && [ "$DRUPAL_VERSION" == "8.5.x" ] ; then export INSPECT="true"; else export INSPECT="false"; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ] && [ "$DRUPAL_VERSION" == "8.8.x" ] ; then export INSPECT="true"; else export INSPECT="false"; fi;
   # Decide if this build is used to push upstream changes to Drupal.org
   - if [ "$INSPECT" == "true" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then export UPSTREAM="true"; else export UPSTREAM="false"; fi;
 
