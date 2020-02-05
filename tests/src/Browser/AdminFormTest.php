@@ -21,7 +21,7 @@ class AdminFormTest extends BrowserTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $admin = $this->drupalCreateUser(['administer modules', 'administer site configuration'], 'administrator', TRUE);
+    $admin = $this->drupalCreateUser(['administer modules', 'administer protect before launch'], 'administrator', TRUE);
     $this->drupalLogin($admin);
     $this->drupalGet('admin/config/protect_before_launch/settings');
 
