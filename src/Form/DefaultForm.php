@@ -34,7 +34,7 @@ class DefaultForm extends FormBase {
    * @param \Drupal\protect_before_launch\Configuration $config
    *   The factory for configuration objects.
    */
-  public function __construct(Configuration $config) {
+  public final function __construct(Configuration $config) {
     $this->config = $config;
   }
 
