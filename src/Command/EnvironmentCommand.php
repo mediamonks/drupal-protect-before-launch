@@ -78,6 +78,7 @@ class EnvironmentCommand extends AbstractCommand {
     }
 
     $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.environment.messages.success'), $key, $value));
+    return 0;
   }
 
 }

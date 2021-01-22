@@ -48,6 +48,7 @@ class PasswordCommand extends AbstractCommand {
     $this->getConfig()->setPassword($password);
 
     $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.password.messages.success'), $password));
+    return 0;
   }
 
 }
