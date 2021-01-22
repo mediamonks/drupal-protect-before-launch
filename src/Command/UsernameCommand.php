@@ -52,6 +52,7 @@ class UsernameCommand extends AbstractCommand {
     $this->getConfig()->setUsername($username);
 
     $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.username.messages.success'), $username));
+    return 0;
   }
 
 }

@@ -61,6 +61,7 @@ class ProtectCommand extends AbstractCommand {
     $this->getConfig()->setProtect($this->getStatusConfigCode($status));
 
     $this->getIo()->info(sprintf($this->trans('commands.protect_before_launch.protect.messages.success'), $status));
+    return 0;
   }
 
   /**

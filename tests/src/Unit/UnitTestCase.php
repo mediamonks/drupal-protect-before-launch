@@ -9,7 +9,6 @@ use Symfony\Component\HttpKernel\Kernel;
  * Unit test helpers.
  */
 class UnitTestCase extends BaseUnitTestCase {
-  use PhpunitCompatibilityTrait;
 
   /**
    * Verify the setInput() support is available when testing console commands.
