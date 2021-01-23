@@ -34,7 +34,7 @@ class EnvironmentCommandTest extends UnitTestCase {
       ]
     );
 
-    $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.environment.messages.success/', $commandTester->getDisplay());
   }
 
   /**
@@ -53,7 +53,7 @@ class EnvironmentCommandTest extends UnitTestCase {
     $commandTester->setInputs(['MY_KEY', 'MY_VALUE']);
     $commandTester->execute([]);
 
-    $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.environment.messages.success/', $commandTester->getDisplay());
   }
 
   /**
@@ -75,7 +75,7 @@ class EnvironmentCommandTest extends UnitTestCase {
       ]
     );
 
-    $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.environment.messages.success/', $commandTester->getDisplay());
   }
 
   /**
@@ -96,7 +96,7 @@ class EnvironmentCommandTest extends UnitTestCase {
       ]
     );
 
-    $this->assertContains('commands.protect_before_launch.environment.messages.success', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.environment.messages.success/', $commandTester->getDisplay());
   }
 
 }

@@ -31,7 +31,7 @@ class ProtectCommandTest extends UnitTestCase {
       ]
     );
 
-    $this->assertContains('commands.protect_before_launch.protect.messages.success', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.protect.messages.success/', $commandTester->getDisplay());
   }
 
   /**
@@ -58,8 +58,8 @@ class ProtectCommandTest extends UnitTestCase {
     $commandTester->setInputs([0]);
     $commandTester->execute([]);
 
-    $this->assertContains('commands.protect_before_launch.protect.messages.question', $commandTester->getDisplay());
-    $this->assertContains('commands.protect_before_launch.protect.messages.success', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.protect.messages.question/', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.protect.messages.success/', $commandTester->getDisplay());
   }
 
   /**

@@ -25,7 +25,8 @@ class UsernameCommandTest extends UnitTestCase {
         'username' => 'updated_username',
       ]
     );
-    $this->assertContains(' commands.protect_before_launch.username.messages.success', explode(PHP_EOL, $commandTester->getDisplay()));
+
+    $this->assertRegExp('/commands.protect_before_launch.username.messages.success/', $commandTester->getDisplay());
   }
 
   /**
@@ -38,8 +39,8 @@ class UsernameCommandTest extends UnitTestCase {
     $commandTester->setInputs(['updated_username']);
     $commandTester->execute([]);
 
-    $this->assertContains(' commands.protect_before_launch.username.messages.question:', explode(PHP_EOL, $commandTester->getDisplay()));
-    $this->assertContains(' commands.protect_before_launch.username.messages.success', explode(PHP_EOL, $commandTester->getDisplay()));
+    $this->assertRegExp('/commands.protect_before_launch.username.messages.question/', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.username.messages.success/', $commandTester->getDisplay());
   }
 
   /**

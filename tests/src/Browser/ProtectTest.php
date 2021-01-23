@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ProtectTest extends BrowserTestBase {
 
+  protected $defaultTheme = 'stark';
+
   /**
    * Modules to enable.
    *

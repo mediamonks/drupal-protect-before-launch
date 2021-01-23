@@ -26,7 +26,7 @@ class PasswordCommandTest extends UnitTestCase {
       ]
     );
 
-    $this->assertContains('commands.protect_before_launch.password.messages.success', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.password.messages.success/', $commandTester->getDisplay());
   }
 
   /**
@@ -39,8 +39,8 @@ class PasswordCommandTest extends UnitTestCase {
     $commandTester->setInputs(['updated_password']);
     $commandTester->execute([]);
 
-    $this->assertContains('commands.protect_before_launch.password.messages.question', $commandTester->getDisplay());
-    $this->assertContains('commands.protect_before_launch.password.messages.success', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.password.messages.question/', $commandTester->getDisplay());
+    $this->assertRegExp('/commands.protect_before_launch.password.messages.success/', $commandTester->getDisplay());
   }
 
   /**

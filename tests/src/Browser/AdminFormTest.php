@@ -13,6 +13,8 @@ use Drupal\Tests\BrowserTestBase;
  */
 class AdminFormTest extends BrowserTestBase {
 
+  protected $defaultTheme = 'stark';
+
   protected static $modules = ['protect_before_launch'];
 
   /**
@@ -33,15 +35,15 @@ class AdminFormTest extends BrowserTestBase {
   public function testViewForm() {
 
     $output = $this->getSession()->getPage()->getContent();
-    $this->assertContains('Status', $output);
-    $this->assertContains('Username', $output);
-    $this->assertContains('Password', $output);
-    $this->assertContains('Confirm password', $output);
-    $this->assertContains('Authentication', $output);
-    $this->assertContains('Realm', $output);
-    $this->assertContains('Exclude Paths', $output);
-    $this->assertContains('Environment Key', $output);
-    $this->assertContains('Environment Value', $output);
+    $this->assertSession()->pageTextContains('Status', $output);
+    $this->assertSession()->pageTextContains('Username', $output);
+    $this->assertSession()->pageTextContains('Password', $output);
+    $this->assertSession()->pageTextContains('Confirm password', $output);
+    $this->assertSession()->pageTextContains('Authentication', $output);
+    $this->assertSession()->pageTextContains('Realm', $output);
+    $this->assertSession()->pageTextContains('Exclude Paths', $output);
+    $this->assertSession()->pageTextContains('Environment Key', $output);
+    $this->assertSession()->pageTextContains('Environment Value', $output);
 
     $this->assertSession()->fieldValueEquals('protect', Configuration::PROTECT_DISABLED);
     $this->assertSession()->fieldValueEquals('username', 'username');
@@ -66,7 +68,7 @@ class AdminFormTest extends BrowserTestBase {
     ], 'Save Configuration');
 
     $output = $this->drupalGet('admin/config/protect_before_launch/settings');
-    $this->assertContains('Username', $output);
+    $this->assertSession()->pageTextContains('Username', $output);
     $this->assertSession()->fieldValueEquals('protect', Configuration::PROTECT_DISABLED);
     $this->assertSession()->fieldValueEquals('username', 'my_username');
     $this->assertSession()->fieldValueEquals('content', 'My Protected Content');
@@ -92,7 +94,7 @@ class AdminFormTest extends BrowserTestBase {
       'PHP_AUTH_USER' => 'username',
       'PHP_AUTH_PW' => 'password'
     ]);
-    $this->assertContains('Username', $output);
+    $this->assertSession()->pageTextContains('Username', $output);
   }
 
 }

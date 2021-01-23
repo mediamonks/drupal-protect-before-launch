@@ -76,7 +76,7 @@ class ConfigurationTest extends UnitTestCase {
    * Test set protected with invalid value.
    */
   public function testSetProtectWithInvalidValue() {
-    $this->setExpectedException(\InvalidArgumentException::class);
+    $this->expectException(\InvalidArgumentException::class);
 
     $configuration = $this->createMock(ConfigFactoryInterface::class);
 
@@ -88,7 +88,7 @@ class ConfigurationTest extends UnitTestCase {
    * Test set authentication type with invalid value.
    */
   public function testSetAuthenticationTypeWithInvalidValue() {
-    $this->setExpectedException(\InvalidArgumentException::class);
+    $this->expectException(\InvalidArgumentException::class);
 
     $configuration = $this->createMock(ConfigFactoryInterface::class);
 
