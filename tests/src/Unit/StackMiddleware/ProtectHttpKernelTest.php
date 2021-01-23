@@ -243,8 +243,8 @@ class ProtectHttpKernelTest extends UnitTestCase {
   private function assertProtected(Response $response) {
     $this->assertEquals($response->getStatusCode(), Response::HTTP_UNAUTHORIZED);
     $this->assertEquals($response->getContent(), 'Access Denied');
-    $this->assertContains('Secured Area', $response->headers->get('www-authenticate'));
-    $this->assertContains('no-cache', $response->headers->get('cache-control'));
+    $this->assertEquals('Basic realm="Secured Area"', $response->headers->get('www-authenticate'));
+    $this->assertEquals('no-cache, private', $response->headers->get('cache-control'));
   }
 
   /**
