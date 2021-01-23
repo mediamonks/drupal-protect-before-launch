@@ -3,7 +3,6 @@ language: php
 php:
   - 7.3
   - 7.4
-  - 8.0
 
 services:
   - mysql
@@ -87,6 +86,8 @@ install:
   # (yes this is ugly but it works very well, let us know if there is a better way to do it please)
   - sed -i "s|\"core/composer.json\"|\"core/composer.json\",\"modules/$MODULE_NAME/composer.json\"|" composer.json
   - composer install
+  - composer require "drupal/console:^1.0" --dev
+  - composer require "mockery/mockery:^1.0" --dev
   - composer update
 
   # This fixes a fail when install Drupal.
