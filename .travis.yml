@@ -99,7 +99,6 @@ install:
   - mysql -e 'create database drupal;'
   - cd $TRAVIS_BUILD_DIR/drupal && drush --yes site-install standard --db-url="mysql://root@127.0.0.1/drupal"
   - cd $TRAVIS_BUILD_DIR/drupal && drush --yes en $MODULE_NAME
-  - cd $TRAVIS_BUILD_DIR/drupal && drush --yes en simpletest
 
   # Export simpletest environment variables
   - export SIMPLETEST_BASE_URL=http://localhost:8080
