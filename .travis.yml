@@ -38,7 +38,7 @@ cache:
 
 before_install:
   # Decide if we are going to do a full inspection on this build
-  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ] && [ "$DRUPAL_VERSION" == "8.7.x" ] ; then export INSPECT="true"; else export INSPECT="false"; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.3" ] && [ "$DRUPAL_VERSION" == "8.9.x" ] ; then export INSPECT="true"; else export INSPECT="false"; fi;
   # Decide if this build is used to push upstream changes to Drupal.org
   - if [ "$INSPECT" == "true" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then export UPSTREAM="true"; else export UPSTREAM="false"; fi;
 
@@ -108,7 +108,7 @@ script:
 
   # Static Analysis
   - if [ "$INSPECT" == "true" ]; then
-      composer require "phpstan/phpstan" --dev;
+      COMPOSER_MEMORY_LIMIT=-1 composer require "phpstan/phpstan" --dev;
       vendor/bin/phpstan analyse modules/$MODULE_NAME/src -c modules/$MODULE_NAME/phpstan.neon;
     fi
 
