@@ -28,7 +28,7 @@
     }
   },
   "require": {
-    "php": "^5.6|^7.0"
+    "php": "^5.6|^7.0|^8.0"
   },
   "require-dev": {
     "drupal/console": "^1.0",
