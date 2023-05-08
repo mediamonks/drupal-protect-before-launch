@@ -2,6 +2,6 @@ name: Protect Before Launch
 type: module
 description: Protect your site before launch with HTTP basic auth
 core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8 || ^9 || ^10
 package: Custom
 configure: protect_before_launch.admin_form
