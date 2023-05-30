@@ -72,24 +72,27 @@ class ProtectHttpKernel implements HttpKernelInterface {
     $this->passwordChecker = $passwordChecker;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = TRUE) {
-    if ($type === static::MASTER_REQUEST
-      && $this->shouldProtect()
-      && !$this->isExcluded($request)
-      && !$this->authenticate($request)
-    ) {
-      $this->killSwitch->trigger();
-      $response = $this->createDenyResponse();
-    }
-    else {
-      $response = $this->httpKernel->handle($request, $type, $catch);
-    }
+    /**
+     * @param Request $request
+     * @param int $type
+     * @param bool $catch
+     * @return Response
+     */
+    public function handle(Request $request, int $type = self::MAIN_REQUEST, bool $catch = TRUE): Response {
+        if ($type === static::MAIN_REQUEST
+            && $this->shouldProtect()
+            && !$this->isExcluded($request)
+            && !$this->authenticate($request)
+        ) {
+            $this->killSwitch->trigger();
+            $response = $this->createDenyResponse();
+        }
+        else {
+            $response = $this->httpKernel->handle($request, $type, $catch);
+        }
 
-    return $response;
-  }
+        return $response;
+    }
 
   /**
    * Create a response which informs a client to use basic authentication.
